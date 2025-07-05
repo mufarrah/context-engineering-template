@@ -1,296 +1,193 @@
-# Context Engineering Template
+# Multi-Stack Context Engineering Templates
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+> **Enhanced Context Engineering framework with support for Next.js + Firebase, Next.js + Supabase, and Flutter + Supabase**
 
-> **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
+Built on the foundation of [Cole Medin's Context Engineering framework](https://github.com/coleam00/context-engineering-intro) with extensions for modern development stacks.
 
 ## 🚀 Quick Start
 
+### For Any Existing Project
 ```bash
-# 1. Clone this template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
+# Clone this repository
+git clone https://github.com/mufarrah/context-engineering-template.git
+cd context-engineering-templates
 
-# 2. Set up your project rules (optional - template provided)
-# Edit CLAUDE.md to add your project-specific guidelines
-
-# 3. Add examples (highly recommended)
-# Place relevant code examples in the examples/ folder
-
-# 4. Create your initial feature request
-# Edit INITIAL.md with your feature requirements
-
-# 5. Generate a comprehensive PRP (Product Requirements Prompt)
-# In Claude Code, run:
-/generate-prp INITIAL.md
-
-# 6. Execute the PRP to implement your feature
-# In Claude Code, run:
-/execute-prp PRPs/your-feature-name.md
+# Set up Context Engineering in any project
+./setup-context-engineering.sh /path/to/your/project
 ```
 
-## 📚 Table of Contents
+### For New Projects  
+```bash
+# Interactive setup
+./setup-context-engineering.sh
 
-- [What is Context Engineering?](#what-is-context-engineering)
-- [Template Structure](#template-structure)
-- [Step-by-Step Guide](#step-by-step-guide)
-- [Writing Effective INITIAL.md Files](#writing-effective-initialmd-files)
-- [The PRP Workflow](#the-prp-workflow)
-- [Using Examples Effectively](#using-examples-effectively)
-- [Best Practices](#best-practices)
-
-## What is Context Engineering?
-
-Context Engineering represents a paradigm shift from traditional prompt engineering:
-
-### Prompt Engineering vs Context Engineering
-
-**Prompt Engineering:**
-- Focuses on clever wording and specific phrasing
-- Limited to how you phrase a task
-- Like giving someone a sticky note
-
-**Context Engineering:**
-- A complete system for providing comprehensive context
-- Includes documentation, examples, rules, patterns, and validation
-- Like writing a full screenplay with all the details
-
-### Why Context Engineering Matters
-
-1. **Reduces AI Failures**: Most agent failures aren't model failures - they're context failures
-2. **Ensures Consistency**: AI follows your project patterns and conventions
-3. **Enables Complex Features**: AI can handle multi-step implementations with proper context
-4. **Self-Correcting**: Validation loops allow AI to fix its own mistakes
-
-## Template Structure
-
-```
-context-engineering-intro/
-├── .claude/
-│   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
-├── PRPs/
-│   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
+# Or with Claude Code
+/create-new-project my-app next-supabase
 ```
 
-This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
+## 🎯 What This Provides
 
-## Step-by-Step Guide
+### **Intelligent Project Detection**
+- Automatically detects your tech stack
+- Applies appropriate templates
+- Configures project-specific patterns
 
-### 1. Set Up Global Rules (CLAUDE.md)
+### **3 Specialized Templates**
+1. **Next.js + Firebase** - Auth, Firestore, Functions
+2. **Next.js + Supabase** - Auth, RLS, Real-time  
+3. **Flutter + Supabase** - Mobile patterns, Clean Architecture
 
-The `CLAUDE.md` file contains project-wide rules that the AI assistant will follow in every conversation. The template includes:
+### **Single Source of Truth**
+- No need for separate template repositories
+- One repo manages all project setups
+- Universal commands for consistency
 
-- **Project awareness**: Reading planning docs, checking tasks
-- **Code structure**: File size limits, module organization
-- **Testing requirements**: Unit test patterns, coverage expectations
-- **Style conventions**: Language preferences, formatting rules
-- **Documentation standards**: Docstring formats, commenting practices
+## 📋 Supported Tech Stacks
 
-**You can use the provided template as-is or customize it for your project.**
+| Stack | Frontend | Backend | Features |
+|-------|----------|---------|----------|
+| **Next.js + Firebase** | Next.js 14+ | Firebase | Auth, Firestore, Storage, Functions |
+| **Next.js + Supabase** | Next.js 14+ | Supabase | Auth, RLS, Real-time, Edge Functions |
+| **Flutter + Supabase** | Flutter | Supabase | Mobile, Clean Architecture, Platform-specific |
 
-### 2. Create Your Initial Feature Request
+## 🔧 How It Works
 
-Edit `INITIAL.md` to describe what you want to build:
+### 1. **Project Analysis**
+```bash
+# Detects project type from:
+# - package.json (Node.js/Next.js)
+# - pubspec.yaml (Flutter)  
+# - Dependencies (Firebase/Supabase)
+```
+
+### 2. **Template Application**
+- Copies appropriate CLAUDE.md with tech-stack rules
+- Creates PLANNING.md template for your architecture
+- Sets up TASK.md for progress tracking
+- Adds validation scripts and documentation
+
+### 3. **Ready for AI Development**
+- Comprehensive context for AI assistants
+- Validation loops ensure code quality
+- Team-ready documentation and patterns
+
+## 📖 Usage Examples
+
+### Setting Up Existing Next.js + Supabase Project
+```bash
+./setup-context-engineering.sh ~/my-nextjs-app
+# Detects Next.js + Supabase, applies appropriate template
+```
+
+### Setting Up Flutter + Supabase Project
+```bash
+./setup-context-engineering.sh ~/my-flutter-app flutter-supabase
+# Uses specific template regardless of auto-detection
+```
+
+### Creating New Project with Context Engineering
+```bash
+# With Claude Code
+/create-new-project ecommerce-app next-firebase
+
+# Creates new Next.js app with Firebase and Context Engineering pre-configured
+```
+
+## 🎨 Customization
+
+### Adding Your Team's Conventions
+Each template can be customized:
 
 ```markdown
-## FEATURE:
-[Describe what you want to build - be specific about functionality and requirements]
-
-## EXAMPLES:
-[List any example files in the examples/ folder and explain how they should be used]
-
-## DOCUMENTATION:
-[Include links to relevant documentation, APIs, or MCP server resources]
-
-## OTHER CONSIDERATIONS:
-[Mention any gotchas, specific requirements, or things AI assistants commonly miss]
+# In CLAUDE.md
+### 🏢 Team Conventions
+- Use specific naming patterns
+- Follow team code review process
+- Use specific testing frameworks
 ```
 
-**See `INITIAL_EXAMPLE.md` for a complete example.**
-
-### 3. Generate the PRP
-
-PRPs (Product Requirements Prompts) are comprehensive implementation blueprints that include:
-
-- Complete context and documentation
-- Implementation steps with validation
-- Error handling patterns
-- Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
-
-Run in Claude Code:
+### Creating New Templates
 ```bash
-/generate-prp INITIAL.md
+# Copy existing template
+cp -r templates/next-firebase templates/next-custom
+
+# Modify for your stack
+# - Update CLAUDE.md
+# - Modify setup.sh
+# - Create appropriate PRP templates
 ```
 
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
+## 🤖 Claude Code Integration
 
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
+### Custom Commands Available
+- `/setup-project` - Apply Context Engineering to any project
+- `/create-new-project` - Create new project with Context Engineering
+- `/generate-prp` - Create comprehensive implementation plans
+- `/execute-prp` - Implement features with validation loops
 
-This command will:
-1. Read your feature request
-2. Research the codebase for patterns
-3. Search for relevant documentation
-4. Create a comprehensive PRP in `PRPs/your-feature-name.md`
+### Example Workflow
+```
+1. Create feature request in INITIAL.md
+2. Run: /generate-prp INITIAL.md  
+3. Run: /execute-prp PRPs/your-feature.md
+4. AI implements with full context and validation
+```
 
-### 4. Execute the PRP
+## 🏗️ Architecture
 
-Once generated, execute the PRP to implement your feature:
+```
+context-engineering-templates/
+├── templates/                  # Tech-stack specific templates
+│   ├── next-firebase/         # Next.js + Firebase template
+│   ├── next-supabase/         # Next.js + Supabase template  
+│   └── flutter-supabase/      # Flutter + Supabase template
+├── .claude/commands/          # Claude Code commands
+├── setup-context-engineering.sh  # Universal setup script
+├── git-setup.sh              # Repository setup helper
+└── docs/                     # Comprehensive documentation
+```
+
+## 🔄 Migration from Original
+
+If you're using Cole Medin's original Context Engineering:
 
 ```bash
-/execute-prp PRPs/your-feature-name.md
+# This extends the original - no migration needed!
+# Just use this for multi-stack support
+./setup-context-engineering.sh /path/to/existing/context-project
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+## 🤝 Contributing
 
-## Writing Effective INITIAL.md Files
+Contributions welcome! Areas for improvement:
+- Additional tech stack templates
+- Enhanced project detection
+- More automation features
+- Better documentation
+- Community examples
 
-### Key Sections Explained
+## 📄 License
 
-**FEATURE**: Be specific and comprehensive
-- ❌ "Build a web scraper"
-- ✅ "Build an async web scraper using BeautifulSoup that extracts product data from e-commerce sites, handles rate limiting, and stores results in PostgreSQL"
+Same license as the original Context Engineering framework. This is an extension, not a replacement.
 
-**EXAMPLES**: Leverage the examples/ folder
-- Place relevant code patterns in `examples/`
-- Reference specific files and patterns to follow
-- Explain what aspects should be mimicked
+## 🙏 Credits
 
-**DOCUMENTATION**: Include all relevant resources
-- API documentation URLs
-- Library guides
-- MCP server documentation
-- Database schemas
+**Original Framework:** [Cole Medin (@coleam00)](https://github.com/coleam00/context-engineering-intro)
 
-**OTHER CONSIDERATIONS**: Capture important details
-- Authentication requirements
-- Rate limits or quotas
-- Common pitfalls
-- Performance requirements
+**Multi-Stack Extensions:** Enhanced for broader development use cases
 
-## The PRP Workflow
+See [CREDITS.md](CREDITS.md) for full attribution.
 
-### How /generate-prp Works
+---
 
-The command follows this process:
+### ⚡ **Why Context Engineering > Prompt Engineering**
 
-1. **Research Phase**
-   - Analyzes your codebase for patterns
-   - Searches for similar implementations
-   - Identifies conventions to follow
+- **Context Engineering**: Complete system with documentation, examples, validation
+- **Prompt Engineering**: Just clever wording
 
-2. **Documentation Gathering**
-   - Fetches relevant API docs
-   - Includes library documentation
-   - Adds gotchas and quirks
+**Result**: 10x better AI assistance with this comprehensive approach.
 
-3. **Blueprint Creation**
-   - Creates step-by-step implementation plan
-   - Includes validation gates
-   - Adds test requirements
-
-4. **Quality Check**
-   - Scores confidence level (1-10)
-   - Ensures all context is included
-
-### How /execute-prp Works
-
-1. **Load Context**: Reads the entire PRP
-2. **Plan**: Creates detailed task list using TodoWrite
-3. **Execute**: Implements each component
-4. **Validate**: Runs tests and linting
-5. **Iterate**: Fixes any issues found
-6. **Complete**: Ensures all requirements met
-
-See `PRPs/EXAMPLE_multi_agent_prp.md` for a complete example of what gets generated.
-
-## Using Examples Effectively
-
-The `examples/` folder is **critical** for success. AI coding assistants perform much better when they can see patterns to follow.
-
-### What to Include in Examples
-
-1. **Code Structure Patterns**
-   - How you organize modules
-   - Import conventions
-   - Class/function patterns
-
-2. **Testing Patterns**
-   - Test file structure
-   - Mocking approaches
-   - Assertion styles
-
-3. **Integration Patterns**
-   - API client implementations
-   - Database connections
-   - Authentication flows
-
-4. **CLI Patterns**
-   - Argument parsing
-   - Output formatting
-   - Error handling
-
-### Example Structure
-
+Ready to transform your development workflow? Start with:
+```bash
+./setup-context-engineering.sh
 ```
-examples/
-├── README.md           # Explains what each example demonstrates
-├── cli.py             # CLI implementation pattern
-├── agent/             # Agent architecture patterns
-│   ├── agent.py      # Agent creation pattern
-│   ├── tools.py      # Tool implementation pattern
-│   └── providers.py  # Multi-provider pattern
-└── tests/            # Testing patterns
-    ├── test_agent.py # Unit test patterns
-    └── conftest.py   # Pytest configuration
-```
-
-## Best Practices
-
-### 1. Be Explicit in INITIAL.md
-- Don't assume the AI knows your preferences
-- Include specific requirements and constraints
-- Reference examples liberally
-
-### 2. Provide Comprehensive Examples
-- More examples = better implementations
-- Show both what to do AND what not to do
-- Include error handling patterns
-
-### 3. Use Validation Gates
-- PRPs include test commands that must pass
-- AI will iterate until all validations succeed
-- This ensures working code on first try
-
-### 4. Leverage Documentation
-- Include official API docs
-- Add MCP server resources
-- Reference specific documentation sections
-
-### 5. Customize CLAUDE.md
-- Add your conventions
-- Include project-specific rules
-- Define coding standards
-
-## Resources
-
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Context Engineering Best Practices](https://www.philschmid.de/context-engineering)
