@@ -37,30 +37,34 @@ else
     PROJECT_TYPE="new"
 fi
 
+# Create context engineering directories first
+echo "📁 Creating context engineering directories..."
+mkdir -p context-engineering/PRPs/examples .claude/commands
+
 # Copy base files
 echo "📄 Copying context engineering files..."
-if [ -f "CLAUDE.md" ]; then
+if [ -f "context-engineering/CLAUDE.md" ]; then
     echo "📝 CLAUDE.md exists. Creating CLAUDE_NEW.md for reference..."
-    cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE_NEW.md
+    cp "$SCRIPT_DIR/CLAUDE.md" ./context-engineering/CLAUDE_NEW.md
     echo "   Please review and merge CLAUDE_NEW.md with your existing CLAUDE.md"
 else
-    cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
-    echo "   Created CLAUDE.md"
+    cp "$SCRIPT_DIR/CLAUDE.md" ./context-engineering/CLAUDE.md
+    echo "   Created context-engineering/CLAUDE.md"
 fi
 
 # Create or update PLANNING.md
-if [ -f "PLANNING.md" ]; then
+if [ -f "context-engineering/PLANNING.md" ]; then
     echo "📝 PLANNING.md exists. Creating PLANNING_NEW.md for reference..."
-    cp "$SCRIPT_DIR/PLANNING_TEMPLATE.md" ./PLANNING_NEW.md
+    cp "$SCRIPT_DIR/PLANNING_TEMPLATE.md" ./context-engineering/PLANNING_NEW.md
     echo "   Please merge PLANNING_NEW.md with your existing PLANNING.md"
 else
-    cp "$SCRIPT_DIR/PLANNING_TEMPLATE.md" ./PLANNING.md
-    echo "   Created PLANNING.md - Please customize it for your project"
+    cp "$SCRIPT_DIR/PLANNING_TEMPLATE.md" ./context-engineering/PLANNING.md
+    echo "   Created context-engineering/PLANNING.md - Please customize it for your project"
 fi
 
 # Create TASK.md if it doesn't exist
-if [ ! -f "TASK.md" ]; then
-    cat > TASK.md << 'EOF'
+if [ ! -f "context-engineering/TASK.md" ]; then
+    cat > context-engineering/TASK.md << 'EOF'
 # Task Tracking
 
 ## Active Tasks
@@ -79,12 +83,12 @@ if [ ! -f "TASK.md" ]; then
 ## Discovered During Work
 <!-- Add new tasks discovered during development -->
 EOF
-    echo "   Created TASK.md"
+    echo "   Created context-engineering/TASK.md"
 fi
 
 # Create INITIAL.md template
-if [ ! -f "INITIAL.md" ]; then
-    cat > INITIAL.md << 'EOF'
+if [ ! -f "context-engineering/INITIAL.md" ]; then
+    cat > context-engineering/INITIAL.md << 'EOF'
 # FEATURE: [Feature Name]
 
 <!-- 
@@ -142,12 +146,8 @@ Look at these files for patterns to follow:
 - Use database indexes
 - Cache when appropriate
 EOF
-    echo "   Created INITIAL.md template"
+    echo "   Created context-engineering/INITIAL.md template"
 fi
-
-# Create context engineering directories
-echo "📁 Creating context engineering directories..."
-mkdir -p .claude/commands PRPs/examples
 
 # Only create project structure for new projects
 if [ "$PROJECT_TYPE" = "new" ]; then
@@ -185,6 +185,15 @@ fi
 
 # Copy command files
 cp -r "$SCRIPT_DIR/.claude/commands/"* ./.claude/commands/ 2>/dev/null || echo "   No Claude commands to copy"
+
+# Copy core context engineering commands from root
+if [ -d "$SCRIPT_DIR/../../.claude/commands" ]; then
+    cp "$SCRIPT_DIR/../../.claude/commands/generate-prp.md" ./.claude/commands/ 2>/dev/null || echo "   generate-prp.md not found"
+    cp "$SCRIPT_DIR/../../.claude/commands/execute-prp.md" ./.claude/commands/ 2>/dev/null || echo "   execute-prp.md not found"
+    cp "$SCRIPT_DIR/../../.claude/commands/analyze-project.md" ./.claude/commands/ 2>/dev/null || echo "   analyze-project.md not found"
+    cp "$SCRIPT_DIR/../../.claude/commands/add-suggestions-to-tasks.md" ./.claude/commands/ 2>/dev/null || echo "   add-suggestions-to-tasks.md not found"
+    echo "   Copied core context engineering commands"
+fi
 
 # Create scripts directory
 mkdir -p scripts
@@ -304,7 +313,7 @@ if [ "$PROJECT_TYPE" = "existing" ]; then
     echo "🔍 Analyzing existing project structure..."
     
     # Create analysis file
-    cat > CONTEXT_ANALYSIS.md << 'EOF'
+    cat > context-engineering/CONTEXT_ANALYSIS.md << 'EOF'
 # Context Engineering Analysis
 
 ## Detected Patterns
@@ -314,30 +323,30 @@ EOF
     
     # Analyze directory structure
     if [ -d "src" ]; then
-        echo "- Using src/ directory structure" >> CONTEXT_ANALYSIS.md
+        echo "- Using src/ directory structure" >> context-engineering/CONTEXT_ANALYSIS.md
     elif [ -d "app" ]; then
-        echo "- Using Next.js app directory" >> CONTEXT_ANALYSIS.md
+        echo "- Using Next.js app directory" >> context-engineering/CONTEXT_ANALYSIS.md
     fi
     
     # Check for existing Supabase setup
     if [ -f "lib/supabase/client.ts" ] || [ -f "src/lib/supabase/client.ts" ] || [ -f "utils/supabase.ts" ] || [ -f "src/utils/supabase.ts" ]; then
-        echo "- Existing Supabase client setup detected" >> CONTEXT_ANALYSIS.md
+        echo "- Existing Supabase client setup detected" >> context-engineering/CONTEXT_ANALYSIS.md
     fi
     
     # Analyze dependencies
     if [ -f "package.json" ]; then
-        echo -e "\n### Key Dependencies" >> CONTEXT_ANALYSIS.md
-        grep -E '"(next|react|@supabase|typescript)"' package.json >> CONTEXT_ANALYSIS.md || true
+        echo -e "\n### Key Dependencies" >> context-engineering/CONTEXT_ANALYSIS.md
+        grep -E '"(next|react|@supabase|typescript)"' package.json >> context-engineering/CONTEXT_ANALYSIS.md || true
     fi
     
-    echo -e "\n## Next Steps\n" >> CONTEXT_ANALYSIS.md
-    echo "1. Review and customize PLANNING.md based on your project" >> CONTEXT_ANALYSIS.md
-    echo "2. Set up Supabase environment variables in .env.local" >> CONTEXT_ANALYSIS.md
-    echo "3. Generate TypeScript types: npm run generate:types" >> CONTEXT_ANALYSIS.md
-    echo "4. Update CLAUDE.md if you have specific conventions" >> CONTEXT_ANALYSIS.md
-    echo "5. Add current work items to TASK.md" >> CONTEXT_ANALYSIS.md
+    echo -e "\n## Next Steps\n" >> context-engineering/CONTEXT_ANALYSIS.md
+    echo "1. Review and customize PLANNING.md based on your project" >> context-engineering/CONTEXT_ANALYSIS.md
+    echo "2. Set up Supabase environment variables in .env.local" >> context-engineering/CONTEXT_ANALYSIS.md
+    echo "3. Generate TypeScript types: npm run generate:types" >> context-engineering/CONTEXT_ANALYSIS.md
+    echo "4. Update CLAUDE.md if you have specific conventions" >> context-engineering/CONTEXT_ANALYSIS.md
+    echo "5. Add current work items to TASK.md" >> context-engineering/CONTEXT_ANALYSIS.md
     
-    echo "   Created CONTEXT_ANALYSIS.md with project analysis"
+    echo "   Created context-engineering/CONTEXT_ANALYSIS.md with project analysis"
 fi
 
 # Add scripts to package.json if it exists
@@ -352,7 +361,7 @@ if [ -f "package.json" ] && command -v jq &> /dev/null; then
 fi
 
 # Create README for the context system
-cat > CONTEXT_ENGINEERING_README.md << 'EOF'
+cat > context-engineering/CONTEXT_ENGINEERING_README.md << 'EOF'
 # Context Engineering System
 
 This project uses Context Engineering to provide comprehensive context to AI coding assistants.
@@ -399,16 +408,18 @@ echo "✅ Context Engineering setup complete!"
 echo ""
 echo "📋 Next steps:"
 if [ "$PROJECT_TYPE" = "existing" ]; then
-    echo "1. Review and customize PLANNING.md for your project"
-    echo "2. Update TASK.md with your current tasks"
-    echo "3. Review CLAUDE.md for AI assistant guidelines"
-    echo "4. Create your first INITIAL.md when starting a new feature"
+    echo "1. Run '/analyze-project' to analyze your codebase and update context files"
+    echo "2. Review context-engineering/PLANNING.md for your project architecture"
+    echo "3. Update context-engineering/TASK.md with your current tasks"
+    echo "4. Review context-engineering/CLAUDE.md for AI assistant guidelines"
+    echo "5. Use '/add-suggestions-to-tasks' to add analysis recommendations to tasks"
+    echo "6. Create context-engineering/INITIAL.md when starting a new feature"
 else
     echo "1. Set up your Supabase project at https://app.supabase.com"
     echo "2. Copy .env.local.example to .env.local and add your Supabase credentials"
     echo "3. Generate TypeScript types: npm run generate:types"
-    echo "4. Review and customize PLANNING.md for your project"
-    echo "5. Update TASK.md with your current tasks"
+    echo "4. Review context-engineering/PLANNING.md for your project"
+    echo "5. Update context-engineering/TASK.md with your current tasks"
 fi
 echo ""
 echo "🤖 Your project is now ready for AI-assisted development!"

@@ -15,13 +15,14 @@ cd context-engineering-templates
 # Add Context Engineering to your existing project
 ./setup-context-engineering.sh /path/to/your/project
 
-# This will ONLY add:
-# - CLAUDE.md (AI assistant guidelines)
-# - PLANNING.md (project architecture)
-# - TASK.md (task tracking)
-# - INITIAL.md (feature template)
-# - .claude/commands/ (Claude Code commands)
-# - PRPs/ (planning directories)
+# This creates two directories:
+# 📁 context-engineering/     - All CE files (CLAUDE.md, PLANNING.md, TASK.md, etc.)
+# 📁 .claude/commands/        - Claude Code commands (generate-prp, execute-prp, analyze-project, etc.)
+
+# After setup, run the analysis command:
+cd /path/to/your/project
+/analyze-project              # Analyzes your codebase and customizes CE files
+/add-suggestions-to-tasks     # Adds analysis recommendations to TASK.md
 ```
 
 ### For New Projects (Full Setup)
@@ -143,15 +144,28 @@ cp -r templates/next-firebase templates/next-custom
 ### Custom Commands Available
 - `/setup-project` - Apply Context Engineering to any project
 - `/create-new-project` - Create new project with Context Engineering
+- `/analyze-project` - Analyze existing codebase and customize CE files
 - `/generate-prp` - Create comprehensive implementation plans
 - `/execute-prp` - Implement features with validation loops
+- `/add-suggestions-to-tasks` - Add analysis recommendations to TASK.md
 
-### Example Workflow
+### Complete Workflow for Existing Projects
 ```
-1. Create feature request in INITIAL.md
-2. Run: /generate-prp INITIAL.md  
-3. Run: /execute-prp PRPs/your-feature.md
-4. AI implements with full context and validation
+1. Run setup: ./setup-context-engineering.sh /path/to/project
+2. Run: /analyze-project        # Analyzes codebase, updates PLANNING.md & CLAUDE.md
+3. Run: /add-suggestions-to-tasks # Adds recommendations to TASK.md
+4. Create: context-engineering/INITIAL.md (describe new feature)
+5. Run: /generate-prp context-engineering/INITIAL.md
+6. Run: /execute-prp context-engineering/PRPs/your-feature.md
+7. AI implements with full context and validation
+```
+
+### Workflow for New Features
+```
+1. Create feature request in context-engineering/INITIAL.md
+2. Run: /generate-prp context-engineering/INITIAL.md  
+3. Run: /execute-prp context-engineering/PRPs/your-feature.md
+4. AI implements following project patterns and validation loops
 ```
 
 ## 🏗️ Architecture
