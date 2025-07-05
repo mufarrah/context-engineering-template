@@ -31,7 +31,14 @@ fi
 
 # Copy base files
 echo "📄 Copying context engineering files..."
-cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
+if [ -f "CLAUDE.md" ]; then
+    echo "📝 CLAUDE.md exists. Creating CLAUDE_NEW.md for reference..."
+    cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE_NEW.md
+    echo "   Please review and merge CLAUDE_NEW.md with your existing CLAUDE.md"
+else
+    cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
+    echo "   Created CLAUDE.md"
+fi
 
 # Create or update PLANNING.md
 if [ -f "PLANNING.md" ]; then
@@ -67,7 +74,8 @@ EOF
 fi
 
 # Create INITIAL.md template
-cat > INITIAL.md << 'EOF'
+if [ ! -f "INITIAL.md" ]; then
+    cat > INITIAL.md << 'EOF'
 # FEATURE: [Feature Name]
 
 <!-- 
@@ -91,8 +99,8 @@ It will be used to generate a comprehensive PRP (Product Requirements Prompt).
 # EXAMPLES
 
 Look at these files for patterns to follow:
-- `components/` - Existing component patterns
-- `lib/firebase/` - Firebase integration patterns
+- `${BASE_DIR}/components/` - Existing component patterns
+- `${BASE_DIR}/lib/firebase/` - Firebase integration patterns
 - [Add specific example files from your project]
 
 # DOCUMENTATION
@@ -122,11 +130,22 @@ Look at these files for patterns to follow:
 - Lazy load components
 - Optimize bundle size
 EOF
-echo "   Created INITIAL.md template"
+    echo "   Created INITIAL.md template"
+fi
+
+# Detect if project uses src directory
+if [ -d "src" ]; then
+    echo "📁 Detected src/ directory structure"
+    BASE_DIR="src"
+else
+    echo "📁 Using root directory structure"
+    BASE_DIR="."
+fi
 
 # Create directories
 echo "📁 Creating directory structure..."
 mkdir -p .claude/commands PRPs/examples
+mkdir -p "$BASE_DIR/lib/firebase" "$BASE_DIR/components" "$BASE_DIR/hooks"
 
 # Copy command files
 cp -r "$SCRIPT_DIR/.claude/commands/"* ./.claude/commands/ 2>/dev/null || echo "   No Claude commands to copy"
@@ -183,7 +202,8 @@ EOF
 fi
 
 # Create README for the context system
-cat > CONTEXT_ENGINEERING_README.md << 'EOF'
+if [ ! -f "CONTEXT_ENGINEERING_README.md" ]; then
+    cat > CONTEXT_ENGINEERING_README.md << 'EOF'
 # Context Engineering System
 
 This project uses Context Engineering to provide comprehensive context to AI coding assistants.
@@ -225,6 +245,8 @@ This template is optimized for Next.js + Firebase projects:
 
 See `PLANNING.md` for detailed architecture guidelines.
 EOF
+    echo "   Created CONTEXT_ENGINEERING_README.md"
+fi
 
 echo "✅ Context Engineering setup complete!"
 echo ""

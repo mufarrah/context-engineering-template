@@ -39,7 +39,14 @@ fi
 
 # Copy base files
 echo "📄 Copying context engineering files..."
-cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
+if [ -f "CLAUDE.md" ]; then
+    echo "📝 CLAUDE.md exists. Creating CLAUDE_NEW.md for reference..."
+    cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE_NEW.md
+    echo "   Please review and merge CLAUDE_NEW.md with your existing CLAUDE.md"
+else
+    cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
+    echo "   Created CLAUDE.md"
+fi
 
 # Create or update PLANNING.md
 if [ -f "PLANNING.md" ]; then
@@ -76,7 +83,8 @@ EOF
 fi
 
 # Create INITIAL.md template
-cat > INITIAL.md << 'EOF'
+if [ ! -f "INITIAL.md" ]; then
+    cat > INITIAL.md << 'EOF'
 # FEATURE: [Feature Name]
 
 <!-- 
@@ -101,8 +109,8 @@ It will be used to generate a comprehensive PRP (Product Requirements Prompt).
 # EXAMPLES
 
 Look at these files for patterns to follow:
-- `lib/supabase/` - Supabase client setup
-- `services/` - Database query patterns
+- `${BASE_DIR}/lib/supabase/` - Supabase client setup
+- `${BASE_DIR}/services/` - Database query patterns
 - [Add specific example files from your project]
 
 # DOCUMENTATION
@@ -134,14 +142,28 @@ Look at these files for patterns to follow:
 - Use database indexes
 - Cache when appropriate
 EOF
-echo "   Created INITIAL.md template"
+    echo "   Created INITIAL.md template"
+fi
+
+# Detect if project uses src directory
+if [ -d "src" ]; then
+    echo "📁 Detected src/ directory structure"
+    BASE_DIR="src"
+else
+    echo "📁 Using root directory structure"
+    BASE_DIR="."
+fi
 
 # Create directories
 echo "📁 Creating directory structure..."
-mkdir -p .claude/commands PRPs/examples lib/supabase services hooks
+mkdir -p .claude/commands PRPs/examples
+mkdir -p "$BASE_DIR/lib/supabase" "$BASE_DIR/services" "$BASE_DIR/hooks"
 
 # Copy command files
 cp -r "$SCRIPT_DIR/.claude/commands/"* ./.claude/commands/ 2>/dev/null || echo "   No Claude commands to copy"
+
+# Create scripts directory
+mkdir -p scripts
 
 # Create Supabase type generation script
 cat > scripts/generate-types.sh << 'EOF'
@@ -157,16 +179,23 @@ if ! command -v supabase &> /dev/null; then
     exit 1
 fi
 
+# Detect base directory
+if [ -d "src" ]; then
+    BASE_DIR="src"
+else
+    BASE_DIR="."
+fi
+
 # Generate types
-npx supabase gen types typescript --project-id "$NEXT_PUBLIC_SUPABASE_PROJECT_ID" > lib/supabase/types.ts
+npx supabase gen types typescript --project-id "$NEXT_PUBLIC_SUPABASE_PROJECT_ID" > "$BASE_DIR/lib/supabase/types.ts"
 
 echo "✅ Types generated successfully!"
 EOF
 chmod +x scripts/generate-types.sh
 
 # Create basic Supabase client setup
-if [ ! -f "lib/supabase/client.ts" ]; then
-    cat > lib/supabase/client.ts << 'EOF'
+if [ ! -f "$BASE_DIR/lib/supabase/client.ts" ]; then
+    cat > "$BASE_DIR/lib/supabase/client.ts" << 'EOF'
 import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from './types'
 
@@ -177,11 +206,11 @@ export function createClient() {
   )
 }
 EOF
-    echo "   Created lib/supabase/client.ts"
+    echo "   Created $BASE_DIR/lib/supabase/client.ts"
 fi
 
-if [ ! -f "lib/supabase/server.ts" ]; then
-    cat > lib/supabase/server.ts << 'EOF'
+if [ ! -f "$BASE_DIR/lib/supabase/server.ts" ]; then
+    cat > "$BASE_DIR/lib/supabase/server.ts" << 'EOF'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import type { Database } from './types'
@@ -208,7 +237,7 @@ export function createClient() {
   )
 }
 EOF
-    echo "   Created lib/supabase/server.ts"
+    echo "   Created $BASE_DIR/lib/supabase/server.ts"
 fi
 
 # Create example environment variables file
@@ -267,7 +296,7 @@ EOF
     fi
     
     # Check for existing Supabase setup
-    if [ -f "lib/supabase/client.ts" ] || [ -f "utils/supabase.ts" ]; then
+    if [ -f "lib/supabase/client.ts" ] || [ -f "src/lib/supabase/client.ts" ] || [ -f "utils/supabase.ts" ] || [ -f "src/utils/supabase.ts" ]; then
         echo "- Existing Supabase client setup detected" >> CONTEXT_ANALYSIS.md
     fi
     
