@@ -6,20 +6,31 @@ Built on the foundation of [Cole Medin's Context Engineering framework](https://
 
 ## 🚀 Quick Start
 
-### For Any Existing Project
+### For Existing Projects (Add Context Engineering Only)
 ```bash
 # Clone this repository
 git clone https://github.com/mufarrah/context-engineering-template.git
 cd context-engineering-templates
 
-# Set up Context Engineering in any project
+# Add Context Engineering to your existing project
 ./setup-context-engineering.sh /path/to/your/project
+
+# This will ONLY add:
+# - CLAUDE.md (AI assistant guidelines)
+# - PLANNING.md (project architecture)
+# - TASK.md (task tracking)
+# - INITIAL.md (feature template)
+# - .claude/commands/ (Claude Code commands)
+# - PRPs/ (planning directories)
 ```
 
-### For New Projects  
+### For New Projects (Full Setup)
 ```bash
-# Interactive setup
+# Interactive setup with optional project structure
 ./setup-context-engineering.sh
+
+# You'll be asked if you want to create project directories
+# (lib/, services/, hooks/, etc.)
 
 # Or with Claude Code
 /create-new-project my-app next-supabase
@@ -30,7 +41,17 @@ cd context-engineering-templates
 ### **Intelligent Project Detection**
 - Automatically detects your tech stack
 - Applies appropriate templates
-- Configures project-specific patterns
+- Respects existing project structure
+
+### **Smart Setup Behavior**
+- **Existing Projects**: Only adds Context Engineering files
+  - No project structure modifications
+  - Preserves your existing architecture
+  - Non-invasive integration
+- **New Projects**: Optional full setup
+  - Prompts for project structure creation
+  - Creates recommended directories only if desired
+  - Includes starter code templates
 
 ### **3 Specialized Templates**
 1. **Next.js + Firebase** - Auth, Firestore, Functions

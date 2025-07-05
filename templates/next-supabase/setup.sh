@@ -145,19 +145,43 @@ EOF
     echo "   Created INITIAL.md template"
 fi
 
-# Detect if project uses src directory
-if [ -d "src" ]; then
-    echo "📁 Detected src/ directory structure"
-    BASE_DIR="src"
-else
-    echo "📁 Using root directory structure"
-    BASE_DIR="."
-fi
-
-# Create directories
-echo "📁 Creating directory structure..."
+# Create context engineering directories
+echo "📁 Creating context engineering directories..."
 mkdir -p .claude/commands PRPs/examples
-mkdir -p "$BASE_DIR/lib/supabase" "$BASE_DIR/services" "$BASE_DIR/hooks"
+
+# Only create project structure for new projects
+if [ "$PROJECT_TYPE" = "new" ]; then
+    echo ""
+    echo "🏗️  Would you like to create the recommended project structure?"
+    echo "   This will create: lib/supabase/, services/, hooks/ directories"
+    read -p "   Create project structure? (y/n) " -n 1 -r CREATE_STRUCTURE
+    echo
+    
+    if [[ $CREATE_STRUCTURE =~ ^[Yy]$ ]]; then
+        # Detect if project uses src directory
+        if [ -d "src" ]; then
+            echo "📁 Detected src/ directory structure"
+            BASE_DIR="src"
+        else
+            echo "📁 Using root directory structure"
+            BASE_DIR="."
+        fi
+        
+        mkdir -p "$BASE_DIR/lib/supabase" "$BASE_DIR/services" "$BASE_DIR/hooks"
+        echo "   Created project structure directories"
+    else
+        echo "   Skipping project structure creation"
+        BASE_DIR="."
+    fi
+else
+    echo "📦 Existing project detected - skipping project structure creation"
+    # Still detect BASE_DIR for file references
+    if [ -d "src" ]; then
+        BASE_DIR="src"
+    else
+        BASE_DIR="."
+    fi
+fi
 
 # Copy command files
 cp -r "$SCRIPT_DIR/.claude/commands/"* ./.claude/commands/ 2>/dev/null || echo "   No Claude commands to copy"
@@ -193,8 +217,8 @@ echo "✅ Types generated successfully!"
 EOF
 chmod +x scripts/generate-types.sh
 
-# Create basic Supabase client setup
-if [ ! -f "$BASE_DIR/lib/supabase/client.ts" ]; then
+# Create basic Supabase client setup (only for new projects or if user created structure)
+if [ "$PROJECT_TYPE" = "new" ] && [[ $CREATE_STRUCTURE =~ ^[Yy]$ ]] && [ ! -f "$BASE_DIR/lib/supabase/client.ts" ]; then
     cat > "$BASE_DIR/lib/supabase/client.ts" << 'EOF'
 import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from './types'
@@ -209,7 +233,7 @@ EOF
     echo "   Created $BASE_DIR/lib/supabase/client.ts"
 fi
 
-if [ ! -f "$BASE_DIR/lib/supabase/server.ts" ]; then
+if [ "$PROJECT_TYPE" = "new" ] && [[ $CREATE_STRUCTURE =~ ^[Yy]$ ]] && [ ! -f "$BASE_DIR/lib/supabase/server.ts" ]; then
     cat > "$BASE_DIR/lib/supabase/server.ts" << 'EOF'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
@@ -374,10 +398,17 @@ EOF
 echo "✅ Context Engineering setup complete!"
 echo ""
 echo "📋 Next steps:"
-echo "1. Set up your Supabase project at https://app.supabase.com"
-echo "2. Copy .env.local.example to .env.local and add your Supabase credentials"
-echo "3. Generate TypeScript types: npm run generate:types"
-echo "4. Review and customize PLANNING.md for your project"
-echo "5. Update TASK.md with your current tasks"
+if [ "$PROJECT_TYPE" = "existing" ]; then
+    echo "1. Review and customize PLANNING.md for your project"
+    echo "2. Update TASK.md with your current tasks"
+    echo "3. Review CLAUDE.md for AI assistant guidelines"
+    echo "4. Create your first INITIAL.md when starting a new feature"
+else
+    echo "1. Set up your Supabase project at https://app.supabase.com"
+    echo "2. Copy .env.local.example to .env.local and add your Supabase credentials"
+    echo "3. Generate TypeScript types: npm run generate:types"
+    echo "4. Review and customize PLANNING.md for your project"
+    echo "5. Update TASK.md with your current tasks"
+fi
 echo ""
-echo "🤖 Your project is now ready for AI-assisted development with Supabase!"
+echo "🤖 Your project is now ready for AI-assisted development!"

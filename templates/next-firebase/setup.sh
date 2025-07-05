@@ -133,19 +133,43 @@ EOF
     echo "   Created INITIAL.md template"
 fi
 
-# Detect if project uses src directory
-if [ -d "src" ]; then
-    echo "📁 Detected src/ directory structure"
-    BASE_DIR="src"
-else
-    echo "📁 Using root directory structure"
-    BASE_DIR="."
-fi
-
-# Create directories
-echo "📁 Creating directory structure..."
+# Create context engineering directories
+echo "📁 Creating context engineering directories..."
 mkdir -p .claude/commands PRPs/examples
-mkdir -p "$BASE_DIR/lib/firebase" "$BASE_DIR/components" "$BASE_DIR/hooks"
+
+# Only create project structure for new projects
+if [ "$PROJECT_TYPE" = "new" ]; then
+    echo ""
+    echo "🏗️  Would you like to create the recommended project structure?"
+    echo "   This will create: lib/firebase/, components/, hooks/ directories"
+    read -p "   Create project structure? (y/n) " -n 1 -r CREATE_STRUCTURE
+    echo
+    
+    if [[ $CREATE_STRUCTURE =~ ^[Yy]$ ]]; then
+        # Detect if project uses src directory
+        if [ -d "src" ]; then
+            echo "📁 Detected src/ directory structure"
+            BASE_DIR="src"
+        else
+            echo "📁 Using root directory structure"
+            BASE_DIR="."
+        fi
+        
+        mkdir -p "$BASE_DIR/lib/firebase" "$BASE_DIR/components" "$BASE_DIR/hooks"
+        echo "   Created project structure directories"
+    else
+        echo "   Skipping project structure creation"
+        BASE_DIR="."
+    fi
+else
+    echo "📦 Existing project detected - skipping project structure creation"
+    # Still detect BASE_DIR for file references
+    if [ -d "src" ]; then
+        BASE_DIR="src"
+    else
+        BASE_DIR="."
+    fi
+fi
 
 # Copy command files
 cp -r "$SCRIPT_DIR/.claude/commands/"* ./.claude/commands/ 2>/dev/null || echo "   No Claude commands to copy"
@@ -251,9 +275,16 @@ fi
 echo "✅ Context Engineering setup complete!"
 echo ""
 echo "📋 Next steps:"
-echo "1. Review and customize PLANNING.md for your project"
-echo "2. Update TASK.md with your current tasks"
-echo "3. Read CONTEXT_ENGINEERING_README.md for usage instructions"
-echo "4. Configure your Firebase environment variables"
+if [ "$PROJECT_TYPE" = "existing" ]; then
+    echo "1. Review and customize PLANNING.md for your project"
+    echo "2. Update TASK.md with your current tasks"
+    echo "3. Review CLAUDE.md for AI assistant guidelines"
+    echo "4. Create your first INITIAL.md when starting a new feature"
+else
+    echo "1. Set up your Firebase project at https://console.firebase.google.com"
+    echo "2. Configure your Firebase environment variables"
+    echo "3. Review and customize PLANNING.md for your project"
+    echo "4. Update TASK.md with your current tasks"
+fi
 echo ""
 echo "🤖 Your project is now ready for AI-assisted development!"
