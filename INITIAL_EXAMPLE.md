@@ -20,6 +20,7 @@ Pydantic AI documentation: https://ai.pydantic.dev/
 
 ## OTHER CONSIDERATIONS:
 
+-- Read `context-engineering/TASK.md`, `context-engineering/PLANNING.md`, `context-engineering/CLAUDE.md` before starting anything to understand everything about our application and what has been done.
 - Include a .env.example, README with instructions for setup including how to configure Gmail and Brave.
 - Include the project structure in the README.
 - Virtual environment has already been set up with the necessary dependencies.

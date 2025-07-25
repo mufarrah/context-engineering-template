@@ -48,6 +48,7 @@ fi
 # Copy base files
 echo "📄 Copying context engineering files..."
 cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
+cp "$SCRIPT_DIR/CONFIG.md" ./CONFIG.md
 
 # Create or update PLANNING.md
 if [ -f "PLANNING.md" ]; then

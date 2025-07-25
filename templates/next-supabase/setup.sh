@@ -52,6 +52,10 @@ else
     echo "   Created context-engineering/CLAUDE.md"
 fi
 
+# Copy CONFIG.md (always update)
+cp "$SCRIPT_DIR/CONFIG.md" ./CONFIG.md
+echo "   Created/Updated CONFIG.md"
+
 # Create or update PLANNING.md
 if [ -f "context-engineering/PLANNING.md" ]; then
     echo "📝 PLANNING.md exists. Creating PLANNING_NEW.md for reference..."

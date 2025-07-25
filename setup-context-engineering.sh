@@ -69,15 +69,17 @@ setup_project() {
             echo "1. Next.js + Firebase"
             echo "2. Next.js + Supabase" 
             echo "3. Flutter + Supabase"
-            echo "4. Custom setup"
+            echo "4. Global Multi-Project Workspace"
+            echo "5. Custom setup"
             echo ""
-            read -p "Choose template (1-4): " template_choice
+            read -p "Choose template (1-5): " template_choice
             
             case $template_choice in
                 1) bash "$SOURCE_DIR/templates/next-firebase/setup.sh" ;;
                 2) bash "$SOURCE_DIR/templates/next-supabase/setup.sh" ;;
                 3) bash "$SOURCE_DIR/templates/flutter-supabase/setup.sh" ;;
-                4) 
+                4) bash "$SOURCE_DIR/templates/global-multi-project/setup.sh" ;;
+                5) 
                     echo "📋 Custom setup:"
                     echo "Copy files manually from $SOURCE_DIR/templates/"
                     ;;
