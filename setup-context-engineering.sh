@@ -70,16 +70,18 @@ setup_project() {
             echo "2. Next.js + Supabase" 
             echo "3. Flutter + Supabase"
             echo "4. Global Multi-Project Workspace"
-            echo "5. Custom setup"
+            echo "5. Generic (Context Engineering only)"
+            echo "6. Custom setup"
             echo ""
-            read -p "Choose template (1-5): " template_choice
+            read -p "Choose template (1-6): " template_choice
             
             case $template_choice in
                 1) bash "$SOURCE_DIR/templates/next-firebase/setup.sh" ;;
                 2) bash "$SOURCE_DIR/templates/next-supabase/setup.sh" ;;
                 3) bash "$SOURCE_DIR/templates/flutter-supabase/setup.sh" ;;
                 4) bash "$SOURCE_DIR/templates/global-multi-project/setup.sh" ;;
-                5) 
+                5) bash "$SOURCE_DIR/templates/generic/setup.sh" ;;
+                6) 
                     echo "📋 Custom setup:"
                     echo "Copy files manually from $SOURCE_DIR/templates/"
                     ;;
@@ -145,8 +147,9 @@ echo "✅ Context Engineering setup complete!"
 echo ""
 echo "📖 Documentation created in your project:"
 echo "   • CONTEXT_ENGINEERING_README.md - Usage guide"
-echo "   • CLAUDE.md - AI assistant rules"
-echo "   • PLANNING.md - Project architecture"
-echo "   • TASK.md - Task tracking"
+echo "   • context-engineering/CLAUDE.md - AI assistant rules"
+echo "   • context-engineering/PLANNING.md - Project architecture"
+echo "   • context-engineering/TASK.md - Task tracking"
+echo "   • context-engineering/INITIAL_EXAMPLE.md - Example feature request"
 echo ""
 echo "🤖 Your project is ready for AI-assisted development!"

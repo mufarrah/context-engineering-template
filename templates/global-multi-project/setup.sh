@@ -36,6 +36,7 @@ cp "$SOURCE_DIR/CLAUDE.md" context-engineering/
 cp "$SOURCE_DIR/PLANNING.md" context-engineering/
 cp "$SOURCE_DIR/TASK.md" context-engineering/
 cp "$SOURCE_DIR/CONFIG.md" .
+cp "$SOURCE_DIR/../../INITIAL_EXAMPLE.md" ./context-engineering/ 2>/dev/null || echo "   INITIAL_EXAMPLE.md not found"
 
 # Copy Claude Code commands
 echo "🤖 Setting up Claude Code commands..."
@@ -389,6 +390,7 @@ echo "   ├── context-engineering/"
 echo "   │   ├── CLAUDE.md      (AI assistant rules)"
 echo "   │   ├── PLANNING.md    (workspace architecture)"
 echo "   │   ├── TASK.md        (cross-project tasks)"
+echo "   │   ├── INITIAL_EXAMPLE.md (example feature request)"
 echo "   │   ├── PRPs/          (Project Requirement Plans templates)"
 echo "   │   └── analysis/      (workspace analysis files)"
 echo "   ├── .claude/           (Claude Code commands)"

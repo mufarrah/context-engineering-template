@@ -96,11 +96,12 @@ cd active-projects/my-app
   - Creates recommended directories only if desired
   - Includes starter code templates
 
-### **4 Specialized Templates**
+### **5 Specialized Templates**
 1. **Next.js + Firebase** - Auth, Firestore, Functions
 2. **Next.js + Supabase** - Auth, RLS, Real-time  
 3. **Flutter + Supabase** - Mobile patterns, Clean Architecture
 4. **Global Multi-Project Workspace** - Multi-stack workspace management
+5. **Generic** - Pure Context Engineering without tech-stack assumptions
 
 ### **Single Source of Truth**
 - No need for separate template repositories
@@ -115,6 +116,7 @@ cd active-projects/my-app
 | **Next.js + Supabase** | Next.js 14+ | Supabase | Auth, RLS, Real-time, Edge Functions |
 | **Flutter + Supabase** | Flutter | Supabase | Mobile, Clean Architecture, Platform-specific |
 | **Global Multi-Project** | Any/Multiple | Any/Multiple | Multi-stack workspace, Project lifecycle management |
+| **Generic** | Any | Any | Pure Context Engineering, tech-stack agnostic |
 
 ## 🔧 How It Works
 

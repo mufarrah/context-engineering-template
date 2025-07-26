@@ -54,6 +54,7 @@ fi
 
 # Copy CONFIG.md (always update)
 cp "$SCRIPT_DIR/CONFIG.md" ./CONFIG.md
+cp "$SCRIPT_DIR/../../INITIAL_EXAMPLE.md" ./context-engineering/ 2>/dev/null || echo "   INITIAL_EXAMPLE.md not found"
 echo "   Created/Updated CONFIG.md"
 
 # Create or update PLANNING.md

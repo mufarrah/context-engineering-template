@@ -49,6 +49,7 @@ fi
 echo "📄 Copying context engineering files..."
 cp "$SCRIPT_DIR/CLAUDE.md" ./CLAUDE.md
 cp "$SCRIPT_DIR/CONFIG.md" ./CONFIG.md
+cp "$SCRIPT_DIR/../../INITIAL_EXAMPLE.md" ./context-engineering/ 2>/dev/null || echo "   INITIAL_EXAMPLE.md not found"
 
 # Create or update PLANNING.md
 if [ -f "PLANNING.md" ]; then
