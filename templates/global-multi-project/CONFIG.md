@@ -3,13 +3,24 @@
 ## 🌍 Available Commands & Workflows
 
 ### 🚀 **Claude Code Commands** (Available anywhere in workspace)
+
+#### Core Commands
 ```bash
 /analyze-project              # Analyze workspace structure and projects
-/generate-prp [feature.md]    # Generate Project Requirement Plan
-/execute-prp [prp-file.md]    # Execute implementation from PRP
 /add-suggestions-to-tasks     # Add analysis suggestions to TASK.md
 /create-new-project           # Create new project with templates
 /setup-project                # Setup Context Engineering in existing project
+```
+
+#### PRP Workflow Commands
+```bash
+/generate-requirements [input.md]   # Transform feature ideas into requirements doc
+/generate-prp [requirements.md]     # Generate implementation plan from requirements
+/check-prp [prp-path]               # Validate PRP structure and alignment
+/execute-prp [prp-path]             # Start Phase 0 implementation
+/continue-prp [prp-path]            # Continue phased implementation (Phase 1+)
+/check-progress [prp-path]          # Comprehensive progress audit
+/ensure-tracking [prp-path]         # Verify documentation before closing context
 ```
 
 ### 📁 **Project Management Commands**

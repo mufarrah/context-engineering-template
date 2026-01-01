@@ -21,6 +21,8 @@ Creates a new project with Context Engineering pre-configured.
    - Sets up appropriate template
    - Configures development environment
    - Adds all necessary documentation
+   - Installs PRP templates (feature_input_template.md, prp_complex.md)
+   - Sets up all Claude Code commands
 
 3. **Initializes git repository**:
    - Creates initial commit
@@ -31,6 +33,7 @@ Creates a new project with Context Engineering pre-configured.
    - Environment setup instructions
    - Initial feature suggestions
    - Team onboarding guide
+   - Available commands reference (see CONFIG.md)
 
 ## Implementation
 

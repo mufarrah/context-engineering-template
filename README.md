@@ -267,12 +267,21 @@ cp -r templates/next-firebase templates/next-custom
 ## 🤖 Claude Code Integration
 
 ### Custom Commands Available
+
+#### Core Commands
 - `/setup-project` - Apply Context Engineering to any project
 - `/create-new-project` - Create new project with Context Engineering
 - `/analyze-project` - Analyze existing codebase and customize CE files
-- `/generate-prp` - Create comprehensive implementation plans
-- `/execute-prp` - Implement features with validation loops
 - `/add-suggestions-to-tasks` - Add analysis recommendations to TASK.md
+
+#### PRP Workflow Commands
+- `/generate-requirements` - Transform feature ideas into structured requirements document
+- `/generate-prp` - Create comprehensive implementation plans from requirements
+- `/check-prp` - Validate PRP structure and alignment with requirements
+- `/execute-prp` - Start Phase 0 implementation with validation loops
+- `/continue-prp` - Continue phased PRP implementation (Phase 1+)
+- `/check-progress` - Comprehensive progress audit against requirements
+- `/ensure-tracking` - Verify documentation completeness before closing context
 
 ### 📋 CONFIG.md - Command Reference
 Every template now includes a comprehensive `CONFIG.md` file that provides:
@@ -305,10 +314,14 @@ cd active-projects/my-app && /analyze-project
 1. Run setup: ./setup-context-engineering.sh /path/to/project
 2. Run: /analyze-project        # Analyzes codebase, updates PLANNING.md & CLAUDE.md
 3. Run: /add-suggestions-to-tasks # Adds recommendations to TASK.md
-4. Create: context-engineering/INITIAL.md (describe new feature)
-5. Run: /generate-prp context-engineering/INITIAL.md
-6. Run: /execute-prp context-engineering/PRPs/your-feature.md
-7. AI implements with full context and validation
+4. Create: feature-input.md using PRPs/templates/feature_input_template.md
+5. Run: /generate-requirements feature-input.md  # Creates structured requirements
+6. Run: /generate-prp context-engineering/FEATURE.md  # Creates implementation plan
+7. Run: /check-prp context-engineering/PRPs/FEATURE/  # Validates the PRP
+8. Run: /execute-prp context-engineering/PRPs/FEATURE/  # Execute Phase 0
+9. Run: /continue-prp context-engineering/PRPs/FEATURE/  # Continue Phase 1+
+10. Run: /check-progress context-engineering/PRPs/FEATURE/  # Audit progress
+11. Run: /ensure-tracking context-engineering/PRPs/FEATURE/  # Before closing context
 ```
 
 ### Complete Workflow for Global Workspaces
@@ -319,18 +332,25 @@ cd active-projects/my-app && /analyze-project
 4. Run: /create-new-project my-app active  # Create projects
 5. Navigate: cd active-projects/my-app
 6. Run: /analyze-project        # Analyze specific project
-7. Create: feature-description.md (describe new feature)
-8. Run: /generate-prp feature-description.md
-9. Run: /execute-prp PRPs/feature-plan.md
-10. Run: /add-suggestions-to-tasks # Add recommendations
+7. Create: feature-input.md using PRPs/templates/feature_input_template.md
+8. Run: /generate-requirements feature-input.md  # Creates requirements doc
+9. Run: /generate-prp context-engineering/FEATURE.md  # Creates PRP
+10. Run: /check-prp context-engineering/PRPs/FEATURE/  # Validates PRP
+11. Run: /execute-prp context-engineering/PRPs/FEATURE/  # Execute Phase 0
+12. Run: /continue-prp context-engineering/PRPs/FEATURE/  # Continue phases
 ```
 
 ### Workflow for New Features (Any Project Type)
 ```
-1. Create feature request in INITIAL.md or feature-description.md
-2. Run: /generate-prp feature-description.md  
-3. Run: /execute-prp PRPs/your-feature.md
-4. AI implements following project patterns and validation loops
+1. Copy PRPs/templates/feature_input_template.md to your feature-input.md
+2. Fill in what you know about your feature
+3. Run: /generate-requirements feature-input.md  # Creates structured requirements
+4. Run: /generate-prp context-engineering/FEATURE.md  # Creates implementation plan
+5. Run: /check-prp context-engineering/PRPs/FEATURE/  # Validates before execution
+6. Run: /execute-prp context-engineering/PRPs/FEATURE/  # Implements Phase 0
+7. Run: /continue-prp context-engineering/PRPs/FEATURE/  # Continue Phase 1+
+8. Run: /check-progress ...  # Audit anytime during development
+9. Run: /ensure-tracking ...  # Before closing any context session
 ```
 
 ## 🏗️ Architecture
@@ -339,9 +359,23 @@ cd active-projects/my-app && /analyze-project
 context-engineering-templates/
 ├── templates/                  # Tech-stack specific templates
 │   ├── next-firebase/         # Next.js + Firebase template
-│   ├── next-supabase/         # Next.js + Supabase template  
-│   └── flutter-supabase/      # Flutter + Supabase template
+│   ├── next-supabase/         # Next.js + Supabase template
+│   ├── flutter-supabase/      # Flutter + Supabase template
+│   ├── global-multi-project/  # Multi-project workspace template
+│   └── generic/               # Generic Context Engineering template
 ├── .claude/commands/          # Claude Code commands
+│   ├── analyze-project.md     # Codebase analysis
+│   ├── generate-requirements.md  # Feature input → Requirements
+│   ├── generate-prp.md        # Requirements → Implementation plan
+│   ├── check-prp.md           # PRP validation
+│   ├── execute-prp.md         # Phase 0 execution
+│   ├── continue-prp.md        # Phase 1+ execution
+│   ├── check-progress.md      # Progress audit
+│   └── ensure-tracking.md     # Documentation verification
+├── PRPs/templates/            # PRP template files
+│   ├── feature_input_template.md  # User feature input template
+│   ├── prp_base.md            # Simple PRP template
+│   └── prp_complex.md         # Phased PRP template
 ├── setup-context-engineering.sh  # Universal setup script
 ├── git-setup.sh              # Repository setup helper
 └── docs/                     # Comprehensive documentation

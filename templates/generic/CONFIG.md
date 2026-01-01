@@ -3,12 +3,24 @@
 ## 🚀 Available Commands & Workflows
 
 ### 🤖 **Claude Code Commands** (Available in any project)
+
+#### Core Commands
 ```bash
 /analyze-project              # Analyze project structure and customize CE files
-/generate-prp [feature.md]    # Generate Project Requirement Plan
-/execute-prp [prp-file.md]    # Execute implementation from PRP
 /add-suggestions-to-tasks     # Add analysis suggestions to TASK.md
 /setup-project                # Setup Context Engineering in existing project
+/create-new-project           # Create new project with Context Engineering
+```
+
+#### PRP Workflow Commands
+```bash
+/generate-requirements [input.md]   # Transform feature ideas into requirements doc
+/generate-prp [requirements.md]     # Generate implementation plan from requirements
+/check-prp [prp-path]               # Validate PRP structure and alignment
+/execute-prp [prp-path]             # Start Phase 0 implementation
+/continue-prp [prp-path]            # Continue phased implementation (Phase 1+)
+/check-progress [prp-path]          # Comprehensive progress audit
+/ensure-tracking [prp-path]         # Verify documentation before closing context
 ```
 
 ### 📋 **Context Engineering Workflow**
@@ -18,21 +30,30 @@
 # 1. Check current tasks
 cat context-engineering/TASK.md
 
-# 2. Create feature description
-echo "# Feature: New Authentication System" > new-feature.md
-echo "Add secure user login with JWT tokens" >> new-feature.md
+# 2. Create feature input from template
+cp PRPs/templates/feature_input_template.md feature-input.md
+# Fill in what you know about your feature
 
-# 3. Generate PRP
-/generate-prp new-feature.md
+# 3. Generate structured requirements
+/generate-requirements feature-input.md
 
-# 4. Review generated plan
-cat context-engineering/PRPs/new-feature.md
+# 4. Generate implementation plan
+/generate-prp context-engineering/FEATURE.md
 
-# 5. Execute implementation
-/execute-prp context-engineering/PRPs/new-feature.md
+# 5. Validate the PRP before execution
+/check-prp context-engineering/PRPs/FEATURE/
 
-# 6. Update tasks with discoveries
-/add-suggestions-to-tasks
+# 6. Execute Phase 0
+/execute-prp context-engineering/PRPs/FEATURE/
+
+# 7. Continue with subsequent phases
+/continue-prp context-engineering/PRPs/FEATURE/
+
+# 8. Check progress during development
+/check-progress context-engineering/PRPs/FEATURE/
+
+# 9. Ensure tracking before closing context
+/ensure-tracking context-engineering/PRPs/FEATURE/
 ```
 
 ## 🛠️ Development Commands

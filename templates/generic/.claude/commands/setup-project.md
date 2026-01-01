@@ -23,6 +23,8 @@ Sets up Context Engineering in any project using the templates from this reposit
    - Creates PLANNING.md template
    - Sets up TASK.md for project tracking
    - Adds setup scripts and documentation
+   - Installs PRP templates (feature_input_template.md, prp_complex.md)
+   - Sets up all Claude Code commands
 
 3. **Analyzes existing project** (if applicable):
    - Scans current structure and patterns
@@ -33,6 +35,7 @@ Sets up Context Engineering in any project using the templates from this reposit
    - All files needed for AI-assisted development
    - Validation scripts for quality assurance
    - Documentation for team usage
+   - CONFIG.md with complete command reference
 
 ## Implementation
 
