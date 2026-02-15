@@ -28,7 +28,7 @@ Read `{current-phase}/COMPLETED.md` and verify it contains:
 
 ### Changes Made (Must Be Complete)
 
-- [ ] **Database Migrations** - All SQL files created with descriptions
+- [ ] **Data Model Changes** - All migration/schema files created with descriptions
 - [ ] **Files Created** - Every new file with its purpose
 - [ ] **Files Modified** - Every modified file with line numbers and what changed
 - [ ] **Types/Interfaces Added** - Code snippets of new types
@@ -79,7 +79,7 @@ Read `{current-phase}/HANDOFF.md` and verify:
 - [ ] **Key Implementation Details** - Important technical details
 - [ ] **Decisions Made** - Table of decisions and reasoning
 - [ ] **Files Summary** - Lists of added and modified files
-- [ ] **Database State** - New tables, columns, functions
+- [ ] **Data Model State** - New tables, columns, functions
 - [ ] **Known Issues / Tech Debt** - List or "None"
 - [ ] **Fixes Applied** - Summary of fixes from FIXES.md
 - [ ] **Verification Checklist** - All boxes checked
@@ -97,11 +97,85 @@ Read `{$ARGUMENTS}/_STATUS.md` and verify:
 
 - [ ] **Current Phase** - Points to the NEXT phase (not the one just completed)
 - [ ] **Status** - Should be "Not Started" for next phase
-- [ ] **Quick Status** - Completed phase shows ✅, next phase shows ⏳
+- [ ] **Quick Status** - Completed phase shows Complete, next phase shows Not Started
 - [ ] **Last Updated** - Today's date with note about what changed
 
 ### If Not Updated:
 **Update it now** to reflect phase completion.
+
+---
+
+## STEP 5.5: AUDIT KNOWLEDGE BASE & PROJECT DOCS
+
+Check if knowledge base AND project documentation were updated for this phase.
+
+### 5.5.1 Determine if Updates are Required
+
+KB and project doc updates are **REQUIRED for EVERY phase** (not just final phase):
+- Knowledge can be lost between sessions
+- Patterns established early should be documented immediately
+- Gotchas discovered should be captured right away
+
+**Skip only if:** Phase was purely bug fixes with no new patterns or decisions.
+
+### 5.5.2 Audit Knowledge Base
+
+Verify:
+- [ ] At least one topic file in `knowledge-base/` references this PRP in `**Source PRPs:**`
+- [ ] The topic file's `## Changes Log` has an entry with today's date (or recent date)
+- [ ] The affected section's `_SUMMARY.md` reflects the topic
+- [ ] `knowledge-base/INDEX.md` is up to date
+
+### 5.5.3 Audit Project Documentation
+
+Identify which project(s) in `active-projects/` were modified by this phase.
+
+For each affected project, verify:
+
+**Project CLAUDE.md:**
+- [ ] New code patterns from this phase are documented
+- [ ] New file organization or module responsibilities are noted
+- [ ] New commands or utilities are listed
+- [ ] Anti-patterns discovered are documented
+
+**Project PLANNING.md:**
+- [ ] Architecture changes are reflected in diagrams/descriptions
+- [ ] New data flows are documented
+- [ ] Data model changes are noted
+- [ ] New integration points are listed
+
+### 5.5.4 If Updates are Missing
+
+Flag as issues:
+- "Knowledge base not updated for phase {N}" → run `/update-knowledge-base {PRP path}`
+- "Project {name}/CLAUDE.md not updated with new patterns"
+- "Project {name}/PLANNING.md not updated with architecture changes"
+
+Offer to run the documentation update now using `/update-knowledge-base {PRP path}`
+
+### 5.5.5 Add to Tracking Report Output:
+
+```
+KNOWLEDGE BASE:
+  Topic updated: {topic-name} in {section}
+  Changes log entry added
+  Summary regenerated
+  Index up to date
+
+PROJECT DOCUMENTATION:
+  {project}/CLAUDE.md: Updated with {what}
+  {project}/PLANNING.md: Updated with {what}
+```
+
+Or if missing:
+```
+KNOWLEDGE BASE:
+  No topic references this PRP — run /update-knowledge-base {PRP path}
+
+PROJECT DOCUMENTATION:
+  {project}/CLAUDE.md: Missing new patterns from this phase
+  {project}/PLANNING.md: Missing architecture changes
+```
 
 ---
 
@@ -132,36 +206,44 @@ Phase: {N} - {Phase Name}
 PRP: {$ARGUMENTS}
 
 COMPLETED.md:
-  ✅ Summary filled
-  ✅ Database migrations documented
-  ✅ Files created listed
-  ✅ Files modified listed
-  ✅ Testing instructions provided
+  Summary filled
+  Data model changes documented
+  Files created listed
+  Files modified listed
+  Testing instructions provided
 
 FIXES.md:
-  ✅ {N} fixes documented
-  ✅ All fixes resolved (no pending)
-  ✅ Code changes included
+  {N} fixes documented
+  All fixes resolved (no pending)
+  Code changes included
 
 HANDOFF.md:
-  ✅ What was built summary
-  ✅ Implementation details
-  ✅ Decisions documented
-  ✅ Files summary complete
-  ✅ Next phase context provided
+  What was built summary
+  Implementation details
+  Decisions documented
+  Files summary complete
+  Next phase context provided
 
 _STATUS.md:
-  ✅ Points to Phase {N+1}
-  ✅ Quick status updated
-  ✅ Last updated set
+  Points to Phase {N+1}
+  Quick status updated
+  Last updated set
+
+Knowledge Base:
+  Topic(s) updated
+  Index regenerated
+
+Project Docs:
+  {project}/CLAUDE.md updated (or "No changes needed")
+  {project}/PLANNING.md updated (or "No changes needed")
 
 Consistency:
-  ✅ Files match across documents
-  ✅ Fixes summarized in handoff
-  ✅ Status aligned
+  Files match across documents
+  Fixes summarized in handoff
+  Status aligned
 
 ========================================
-READY TO CLOSE CONTEXT ✅
+READY TO CLOSE CONTEXT
 
 Next session: /continue-prp {$ARGUMENTS}
 ========================================
@@ -180,7 +262,7 @@ Issues Found and Fixed:
 - _STATUS.md: Updated to point to Phase 2
 
 ========================================
-NOW READY TO CLOSE CONTEXT ✅
+NOW READY TO CLOSE CONTEXT
 
 Next session: /continue-prp {$ARGUMENTS}
 ========================================
@@ -212,8 +294,16 @@ Before closing context, all must be true:
 
 ### _STATUS.md
 - [ ] Points to next phase
-- [ ] Completed phase marked ✅
+- [ ] Completed phase marked complete
 - [ ] Last updated is today
+
+### Knowledge Base
+- [ ] At least one topic references this PRP
+- [ ] Index and summaries are up to date
+
+### Project Docs
+- [ ] Affected project's CLAUDE.md has new patterns (if any)
+- [ ] Affected project's PLANNING.md has architecture changes (if any)
 
 ---
 

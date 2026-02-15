@@ -31,7 +31,7 @@ For simple PRPs:
 Read the ENTIRE requirements document to understand:
 - Total scope of the feature
 - All phases/stages defined
-- Database changes required
+- Data model changes required
 - Success criteria
 - Edge cases documented
 
@@ -45,8 +45,8 @@ Check that these files exist in the PRP folder:
 
 | File | Status | Notes |
 |------|--------|-------|
-| `_STATUS.md` | ⏳ | Must point to current phase |
-| `OVERVIEW.md` | ⏳ | Must summarize feature |
+| `_STATUS.md` | -- | Must point to current phase |
+| `OVERVIEW.md` | -- | Must summarize feature |
 
 ### 2.2 Phase Folder Structure
 
@@ -67,20 +67,20 @@ STRUCTURAL VALIDATION
 ========================================
 
 Root Files:
-- ✅ _STATUS.md exists
-- ✅ OVERVIEW.md exists
+- _STATUS.md exists
+- OVERVIEW.md exists
 
 Phase Folders Found: {N}
 
 Phase 0 - {name}:
-- ✅ PLAN.md
-- ✅ COMPLETED.md
-- ✅ FIXES.md
-- ✅ HANDOFF.md
+- PLAN.md
+- COMPLETED.md
+- FIXES.md
+- HANDOFF.md
 
 Phase 1 - {name}:
-- ✅ PLAN.md
-- ❌ COMPLETED.md (MISSING)
+- PLAN.md
+- COMPLETED.md (MISSING)
 ...
 
 Issues Found: {count}
@@ -101,11 +101,11 @@ Verify:
 ### 3.2 OVERVIEW.md Checks
 
 Verify these sections exist and are filled:
-- [ ] Safety Rules section (LOCAL DATABASE, NO GIT, NO DEPLOY)
+- [ ] Safety Rules section
 - [ ] Feature Summary (not placeholder text)
 - [ ] Implementation Phases table
 - [ ] Key Decisions table
-- [ ] Database Changes Summary
+- [ ] Data Model Changes Summary
 - [ ] Required Reading list
 - [ ] Overall Success Criteria
 
@@ -136,7 +136,7 @@ Verify each PLAN.md has:
 
 From the requirements document, extract:
 1. All defined phases/stages
-2. All database changes mentioned
+2. All data model changes mentioned
 3. All files that should be modified
 4. All success criteria
 5. All edge cases
@@ -153,28 +153,27 @@ REQUIREMENTS ALIGNMENT CHECK
 
 PHASES COVERAGE:
 Requirements defines {N} phases:
-- ✅ Phase 0: Foundation - Covered in phase-0-foundation/
-- ✅ Phase 1: UI Updates - Covered in phase-1-ui/
-- ❌ Phase 2: Testing - NOT FOUND IN PRP
+- Phase 0: Foundation - Covered in phase-0-foundation/
+- Phase 1: UI Updates - Covered in phase-1-ui/
+- Phase 2: Testing - NOT FOUND IN PRP
 
-DATABASE CHANGES:
+DATA MODEL CHANGES:
 Requirements mentions these changes:
-- ✅ Add column `booking_mode` - Phase 0, Task 1
-- ✅ Create table `booking_participants` - Phase 0, Task 2
-- ❌ Add index on `availability_id` - NOT FOUND IN ANY PLAN
+- Add column `status` - Phase 0, Task 1
+- Create table `participants` - Phase 0, Task 2
+- Add index on `foreign_key` - NOT FOUND IN ANY PLAN
 
 FILE MODIFICATIONS:
 Requirements references these files:
-- ✅ src/components/forms/booking-form.tsx - Phase 3, Task 2
-- ❌ src/lib/availability.ts - NOT FOUND IN ANY PLAN
+- src/components/forms/main-form.tsx - Phase 3, Task 2
+- src/lib/utils.ts - NOT FOUND IN ANY PLAN
 
 SUCCESS CRITERIA:
-- ✅ "Coaches can create group booking types" - Phase 1 Acceptance
-- ❌ "Calendar shows capacity" - NOT FOUND IN ANY PHASE
+- "Users can create records" - Phase 1 Acceptance
+- "Dashboard shows analytics" - NOT FOUND IN ANY PHASE
 
 KEY DECISIONS:
-- ✅ "Groups must link to availability" - Documented in OVERVIEW.md
-- ✅ "1v1 uses clientId" - Documented in OVERVIEW.md
+- "Use approach A over B" - Documented in OVERVIEW.md
 ```
 
 ### 4.3 Check for Orphaned PRP Content
@@ -196,9 +195,9 @@ For each file path mentioned in PLAN.md tasks:
 
 ```
 FILE PATH VALIDATION:
-- ✅ src/components/forms/booking-form.tsx - EXISTS
-- ❌ src/components/forms/participant-selector.tsx - DOES NOT EXIST (will be created)
-- ❌ src/lib/booking/capacity.ts - DOES NOT EXIST (not marked as CREATE)
+- src/components/forms/main-form.tsx - EXISTS
+- src/components/forms/new-component.tsx - DOES NOT EXIST (will be created)
+- src/lib/missing-util.ts - DOES NOT EXIST (not marked as CREATE)
 ```
 
 ### 5.2 Code Pattern Quality
@@ -211,7 +210,7 @@ Check if code patterns in PLAN.md:
 ### 5.3 Validation Commands Check
 
 Verify validation commands are:
-- Appropriate for the project (npm/yarn/pnpm)
+- Appropriate for the project
 - Include build check
 - Include lint check
 - Include any project-specific tests
@@ -235,7 +234,7 @@ Generated: {date from OVERVIEW.md}
 ========================================
 STRUCTURAL VALIDATION
 ========================================
-Status: ✅ PASS | ❌ FAIL
+Status: PASS | FAIL
 
 Root Files: {X}/{Y} present
 Phase Folders: {N}
@@ -247,7 +246,7 @@ Issues:
 ========================================
 CONTENT VALIDATION
 ========================================
-Status: ✅ PASS | ❌ FAIL
+Status: PASS | FAIL
 
 _STATUS.md: {complete/incomplete}
 OVERVIEW.md: {X}/{Y} sections filled
@@ -259,10 +258,10 @@ Issues:
 ========================================
 REQUIREMENTS ALIGNMENT
 ========================================
-Status: ✅ ALIGNED | ⚠️ GAPS FOUND | ❌ MAJOR GAPS
+Status: ALIGNED | GAPS FOUND | MAJOR GAPS
 
 Phases: {X}/{Y} covered
-Database Changes: {X}/{Y} covered
+Data Model Changes: {X}/{Y} covered
 File Modifications: {X}/{Y} covered
 Success Criteria: {X}/{Y} covered
 Key Decisions: {X}/{Y} documented
@@ -276,7 +275,7 @@ Potential Scope Creep:
 ========================================
 QUALITY CHECKS
 ========================================
-Status: ✅ PASS | ⚠️ WARNINGS | ❌ FAIL
+Status: PASS | WARNINGS | FAIL
 
 File Paths: {X}/{Y} verified
 Code Patterns: {quality assessment}
@@ -292,9 +291,9 @@ OVERALL ASSESSMENT
 Score: {1-10}/10
 
 Recommendation:
-- ✅ READY FOR EXECUTION - PRP is complete and aligned
-- ⚠️ MINOR FIXES NEEDED - Fix issues before executing
-- ❌ REGENERATE PRP - Major gaps require re-running /generate-prp
+- READY FOR EXECUTION - PRP is complete and aligned
+- MINOR FIXES NEEDED - Fix issues before executing
+- REGENERATE PRP - Major gaps require re-running /generate-prp
 
 {If issues found:}
 Action Items:
@@ -339,36 +338,19 @@ Do NOT auto-fix. Instead:
 
 ---
 
-## EXAMPLE USAGE
-
-```
-User: /check-prp context-engineering/PRPs/GROUP-REGISTRATION/
-
-Agent:
-1. Reads _STATUS.md → finds source: context-engineering/GROUP_REGISTRATION.md
-2. Reads GROUP_REGISTRATION.md completely
-3. Checks all phase folders and files
-4. Validates content in each file
-5. Cross-references requirements with PRP content
-6. Generates comprehensive report
-7. Recommends next steps
-```
-
----
-
 ## QUICK CHECKLIST (For Agent Reference)
 
 ```
-□ Located PRP and determined type (simple/phased)
-□ Found and read source requirements document
-□ Verified all required files exist
-□ Checked _STATUS.md content
-□ Checked OVERVIEW.md content
-□ Checked each PLAN.md has required sections
-□ Extracted all requirements items
-□ Cross-referenced each requirement with PRP
-□ Verified file paths exist in codebase
-□ Assessed code pattern quality
-□ Generated comprehensive report
-□ Provided actionable recommendations
+[] Located PRP and determined type (simple/phased)
+[] Found and read source requirements document
+[] Verified all required files exist
+[] Checked _STATUS.md content
+[] Checked OVERVIEW.md content
+[] Checked each PLAN.md has required sections
+[] Extracted all requirements items
+[] Cross-referenced each requirement with PRP
+[] Verified file paths exist in codebase
+[] Assessed code pattern quality
+[] Generated comprehensive report
+[] Provided actionable recommendations
 ```
