@@ -16,13 +16,20 @@ Generate a complete, implementation-ready PRP from a requirements document.
 - Do NOT skim - read every section carefully
 - Understand the full scope of the feature
 
-### 1.2 Extract Key Information
+### 1.2 Move Feature Input to In-Progress
+
+If the feature input is in `context-engineering/feature-inputs/pending/`, move it to `in-progress/`:
+```bash
+mv context-engineering/feature-inputs/pending/{FEATURE-NAME}.md context-engineering/feature-inputs/in-progress/
+```
+
+### 1.3 Extract Key Information
 
 While reading, identify:
 
 - What is the feature?
 - What are the phases/stages (if defined)?
-- What database changes are needed?
+- What data model changes are needed?
 - What files will be modified?
 - What decisions have been made?
 - What are the success criteria?
@@ -36,7 +43,7 @@ While reading, identify:
 
 - Are there contradicting decisions in different sections?
 - Do all the pieces fit together logically?
-- Are database schemas consistent throughout?
+- Are data model schemas consistent throughout?
 
 ### 2.2 Check for Completeness
 
@@ -73,6 +80,51 @@ For each component mentioned in requirements:
 - What conventions exist in the codebase?
 - What validation/error handling patterns are used?
 - What test patterns exist?
+
+### 3.2.5 Search Knowledge Base
+
+Before diving deeper into raw codebase files, check the knowledge base for existing context:
+
+1. Read `knowledge-base/INDEX.md` to find relevant topics for this feature
+2. Read `_SUMMARY.md` for each relevant section (concepts, flows, implementations, gotchas, decisions)
+3. Read specific topic files that relate to the feature being planned
+
+**What you're looking for:**
+- **Concepts** - What entities/schemas this feature uses
+- **Flows** - What processes this feature participates in or depends on
+- **Implementations** - What project-specific patterns to follow
+- **Gotchas** - Known pitfalls to avoid in this area
+- **Decisions** - Why certain approaches were chosen (follow existing patterns)
+
+**CRITICAL: Fill the "Knowledge Base References" section in the PRP**
+
+Both PRP templates now have a "Knowledge Base References" section. You MUST fill it with relevant topics:
+
+```yaml
+# Knowledge Base References
+concepts:
+  - [entity-name.md] # Feature creates/modifies this entity
+
+flows:
+  - [process-name.md] # Feature affects this process flow
+
+implementations:
+  - [patterns.md] # Feature follows these patterns
+
+gotchas:
+  - [known-issue.md] # Feature must avoid this pitfall
+
+decisions:
+  - [005-architecture-choice.md] # Feature follows this decision
+```
+
+**How to fill it:**
+- **Only include topics directly relevant to implementation**
+- **Prioritize gotchas** - if there's a known pitfall, always reference it
+- **Add brief comments** explaining why each topic is relevant
+- **Don't over-reference** - only include what the implementing agent needs to read
+
+This ensures implementing agents have instant access to relevant historical context and don't repeat past mistakes.
 
 ### 3.3 Document Your Findings
 
@@ -138,12 +190,30 @@ Before creating any files, think deeply:
 
 1. Read template: `context-engineering/PRPs/templates/prp_base.md`
 2. Fill in all sections with your research findings
-3. Include actual code snippets from codebase
-4. Include context files to read:
-   - `context-engineering/CLAUDE.md` - General rules
-   - `context-engineering/PLANNING.md` - Project overview
-5. Include validation commands (TypeScript: `npm run build`, `npm run lint`, etc.)
-6. Save as: `context-engineering/PRPs/{feature-name}.md`
+3. **Add a status header block** at the very top of the PRP file (before the title):
+   ```markdown
+   **Status:** Not Started
+   **Feature Input:** context-engineering/feature-inputs/in-progress/{feature-name}.md
+   **Last Updated:** {today's date}
+
+   ---
+
+   # PRP: {Feature Title}
+   ...
+   ```
+   This status header enables `/audit-context` to track simple PRPs alongside phased PRPs.
+4. Include actual code snippets from codebase
+5. Include context files to read:
+   - `CLAUDE.md` (root) - Project navigation, workflow, and coding standards
+   - `PLANNING.md` (root) - Architecture and development philosophy
+   - `context-engineering/_STATUS.md` - Current project status and in-progress work
+6. Include validation commands from project CLAUDE.md (build, lint, test commands)
+7. **Add inline test cases section** to the PRP file:
+   a. Read the project's CLAUDE.md for the validation method
+   b. Follow the "Test Cases" format from `prp_base.md` template
+   c. Generate concrete test cases with validation steps
+   d. Same coverage rules as phased PRPs: happy path, edge cases, protection, regression
+8. Save as: `context-engineering/PRPs/{feature-name}.md`
 
 ### For Complex/Phased Features
 
@@ -156,13 +226,14 @@ Before creating any files, think deeply:
    ├── OVERVIEW.md
    ├── phase-0-{name}/
    │   ├── PLAN.md
+   │   ├── TEST-CASES.md
    │   ├── COMPLETED.md
    │   ├── FIXES.md
    │   └── HANDOFF.md
    ├── phase-1-{name}/
-   │   └── ... (same 4 files)
+   │   └── ... (same 5 files)
    └── phase-N-{name}/
-       └── ... (same 4 files)
+       └── ... (same 5 files)
    ```
 4. Fill `_STATUS.md` - pointing to Phase 0
 5. Fill `OVERVIEW.md` - complete feature summary from requirements
@@ -173,6 +244,27 @@ Before creating any files, think deeply:
    - Validation commands
    - Acceptance criteria
 7. Create empty templates for `COMPLETED.md`, `FIXES.md`, `HANDOFF.md` (as shown in prp_complex.md)
+8. **Generate TEST-CASES.md for each phase:**
+   a. Read the phase's PLAN.md tasks and acceptance criteria
+   b. Read the requirements document's "Test Scenarios" section (if available from `/generate-requirements`)
+   c. Read the project's CLAUDE.md for the validation method:
+      - Find the "Testing & Debugging" or "Validation" section
+      - Note any project-specific testing tools or commands
+   d. Generate test cases following `context-engineering/PRPs/templates/test_cases_template.md`:
+      - Fill the "Testing Approach" section with the project's specific validation tools
+      - Group test cases into logical sections (A, B, C...) by feature area
+      - Each test case must have: Steps, Expected, Validation, Status
+      - Include pre-requisites (what must be true before testing)
+      - Include Test Execution Tracker table at the bottom
+   e. Test cases should cover:
+      - **Happy path** — Each task's expected outcome verified
+      - **Edge cases** — Boundary conditions, empty states, max limits, null values
+      - **Protection/validation** — Blocked actions, error messages, access control
+      - **Regression** — Existing functionality that must still work after changes
+   f. Aim for 5-30 test cases per phase depending on risk level:
+      - Low-risk phases: 5-10 cases
+      - Medium-risk phases: 10-20 cases
+      - High-risk phases: 15-30 cases
 
 ---
 
@@ -185,14 +277,37 @@ Before finishing, verify:
 - [ ] Codebase research completed thoroughly
 - [ ] All file paths are verified to exist in codebase
 - [ ] Code patterns are from actual codebase (not invented)
+- [ ] **Knowledge Base References section is filled with relevant topics**
 - [ ] Each PLAN.md is detailed enough for implementation without original requirements
 - [ ] Phase dependencies are clear (for phased PRPs)
 - [ ] Validation commands will work
 - [ ] Context files are referenced
+- [ ] **TEST-CASES.md generated for each phase** (phased) or inline test section (simple)
+- [ ] **Each test case has concrete validation steps** (not placeholder)
+- [ ] **Testing Approach section filled** with project-specific validation method from CLAUDE.md
 
 ---
 
-## STEP 8: OUTPUT SUMMARY
+## STEP 8: UPDATE PROJECT STATUS
+
+After creating the PRP, update `context-engineering/_STATUS.md`:
+
+1. Read the current `_STATUS.md`
+2. Add this feature to the "In Progress" section with link to the PRP
+3. Update the "Pending Features" section if needed
+
+Example update:
+```markdown
+## In Progress
+
+### {Feature Name}
+**PRP:** `context-engineering/PRPs/{feature-name}.md` (or folder path)
+- PRP created, ready for implementation
+```
+
+---
+
+## STEP 9: OUTPUT SUMMARY
 
 After completion, provide:
 
@@ -216,6 +331,7 @@ Research Summary:
 - Files analyzed: {count}
 - Patterns identified: {count}
 - External docs referenced: {count}
+- Test cases generated: {total across all phases}
 
 Confidence Score: {1-10}/10
 (confidence for one-pass implementation success)
@@ -240,19 +356,16 @@ To execute: /execute-prp {output path}
 
 ---
 
-## ⚠️ SAFETY RULES TO INCLUDE IN ALL PRPs
+## SAFETY RULES TO INCLUDE IN ALL PRPs
 
 When generating PRPs, ALWAYS include these safety rules in the OVERVIEW.md (for phased PRPs) or in the main PRP file (for simple PRPs):
 
 ```markdown
-## ⚠️ CRITICAL SAFETY RULES
+## CRITICAL SAFETY RULES
 
-### 1. LOCAL DATABASE ONLY
-- **ALWAYS** use `--local` flag with ALL Supabase commands
-- Examples:
-  - ✅ `npx supabase migration up --local`
-  - ✅ `npx supabase db reset --local`
-  - ❌ `npx supabase migration up` (DANGEROUS - affects production!)
+### 1. Follow Project Safety Rules
+- Read the project's `CLAUDE.md` for safety rules and coding standards
+- Follow all environment-specific constraints (local vs production, etc.)
 
 ### 2. NO GIT COMMITS
 - **NEVER** commit code to GitHub during implementation

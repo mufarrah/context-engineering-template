@@ -1,0 +1,39 @@
+# Active projects are independent git repos - exclude their contents
+# active-projects/*/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependencies (project-specific)
+node_modules/
+__pycache__/
+*.pyc
+.dart_tool/
+build/
+
+# Keys and secrets
+keys/
+*.pem
+*.key
+
+# Workspace backup
+.workspace-backup/
+
+# Build artifacts
+dist/
+.next/
+out/

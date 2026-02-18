@@ -21,33 +21,120 @@ Check if `$ARGUMENTS` is:
 ## FOR SIMPLE PRPs (Single File)
 
 ### 1. Load PRP
+- Read `context-engineering/_STATUS.md` to understand current workspace context
 - Read the PRP file completely
 - Understand all context and requirements
 - Note the validation commands and acceptance criteria
 
-### 2. ULTRATHINK
+### 2. Update Status Header
+Update the PRP file's status header to reflect work has started:
+```markdown
+**Status:** In Progress
+**Feature Input:** {keep existing path}
+**Last Updated:** {today's date}
+```
+If the PRP has no status header (older PRP), add one at the top of the file.
+
+### 3. ULTRATHINK
 - Plan your approach before coding
 - Break down into tasks using TodoWrite tool
 - Identify patterns from existing code to follow
 
-### 3. Execute
+### 4. Execute
 - Implement the code following the PRP instructions
 - Update TodoWrite as you complete tasks
 
-### 4. Validate
+### 5. Validate
 - Run each validation command from the PRP
 - Fix any failures
 - Re-run until all pass
 
-### 5. Complete
+### 5.5 Guided Testing Walkthrough
+
+If the PRP contains a "Test Cases" section:
+
+1. Read the test cases section completely
+2. Tell the user you're ready to walk them through testing:
+   ```
+   ========================================
+   READY FOR GUIDED TESTING
+   ========================================
+
+   I'll walk you through {N} test cases.
+   For each test, I'll:
+   - Tell you what to do
+   - Validate the result after your action
+   - Mark pass/fail
+
+   Let's start with TC-1: {title}
+   ========================================
+   ```
+3. For each test case:
+   a. Present the test case ID, title, and steps to the user
+   b. Wait for user to perform the steps
+   c. Run validation using the project's validation method (from project CLAUDE.md)
+   d. Compare results against expected outcomes
+   e. Mark the test as passed or failed with detailed notes
+   f. If failed → log to fixes, fix the issue, retest
+4. Update the Test Execution Tracker in the PRP with results
+5. Continue to next step only when all tests pass (or user explicitly skips)
+
+### 6. Update Status Header to Complete
+Update the PRP file's status header:
+```markdown
+**Status:** Complete
+**Feature Input:** {keep existing path}
+**Last Updated:** {today's date}
+```
+
+### 7. Update Workspace Status
+After successful implementation:
+1. Read `context-engineering/_STATUS.md`
+2. Move the feature from "In Progress" to "Recently Completed"
+3. Update the entry with completion date
+
+### 8. Archive Feature Input
+Move the feature input document:
+```bash
+mv context-engineering/feature-inputs/in-progress/{feature-name}.md context-engineering/archive/feature-inputs/
+```
+Update the `**Feature Input:**` path in the PRP status header to reflect the archive location.
+
+### 8.5. Update Knowledge Base & Project Docs
+
+After archiving, run the full `/update-knowledge-base` process to:
+
+1. **Update Knowledge Base:**
+   - Extract key decisions, gotchas, patterns, and architecture from this PRP
+   - Create or update topic files in appropriate sections (concepts, flows, implementations, gotchas, decisions)
+   - Regenerate affected `_SUMMARY.md` files and `knowledge-base/INDEX.md`
+
+2. **Update Project Documentation:**
+   - Update affected project's `CLAUDE.md` with new patterns, conventions, module responsibilities
+   - Update affected project's `PLANNING.md` with architecture changes, data flows, integrations
+
+**What to extract:**
+- Key decisions and their rationale
+- Files created/modified and data flow patterns
+- Gotchas discovered during implementation or fixes
+- Data model changes (new tables, columns, functions)
+- New code patterns or conventions established
+- Module responsibility changes
+
+For detailed instructions, see `/update-knowledge-base`.
+
+### 9. Complete
 - Verify all acceptance criteria are met
 - Report completion status:
   ```
   ========================================
-  PRP EXECUTION COMPLETE ✅
+  PRP EXECUTION COMPLETE
   ========================================
 
   All tasks completed and validated.
+  PRP status updated to: Complete
+  Feature input archived to: context-engineering/archive/feature-inputs/
+  Workspace _STATUS.md updated
   ========================================
   ```
 
@@ -59,9 +146,11 @@ This command starts Phase 0. For subsequent phases, use `/continue-prp`.
 
 ### 1. Load Context
 Read in this order:
-1. `{$ARGUMENTS}/_STATUS.md` - Verify we're on Phase 0
-2. `{$ARGUMENTS}/OVERVIEW.md` - Full feature context
-3. `{$ARGUMENTS}/phase-0-*/PLAN.md` - Phase 0 tasks
+1. `context-engineering/_STATUS.md` - Current workspace status
+2. `{$ARGUMENTS}/_STATUS.md` - Verify we're on Phase 0
+3. `{$ARGUMENTS}/OVERVIEW.md` - Full feature context
+4. `{$ARGUMENTS}/phase-0-*/PLAN.md` - Phase 0 tasks
+5. `{$ARGUMENTS}/phase-0-*/TEST-CASES.md` - Phase 0 test cases (for guided testing after implementation)
 
 ### 2. Verify Starting Point
 - Confirm status is "Not Started" for Phase 0
@@ -81,6 +170,36 @@ Use TodoWrite to track progress.
 - Fix any failures
 - Verify acceptance criteria
 
+### 4.5 Guided Testing Walkthrough
+
+1. Read `{phase}/TEST-CASES.md`
+2. Tell the user:
+   ```
+   ========================================
+   READY FOR GUIDED TESTING
+   ========================================
+
+   I'll walk you through {N} test cases for Phase 0.
+   For each test, I'll:
+   - Tell you what to do
+   - Validate the result after your action
+   - Mark pass/fail
+
+   Let's start with TC-A1: {title}
+   ========================================
+   ```
+3. For each test case:
+   a. Present the test case ID, title, and steps to the user
+   b. Wait for user confirmation they performed the action
+   c. Run validation using the project's validation method (from project CLAUDE.md)
+   d. Compare results against expected outcomes
+   e. Mark passed or failed with detailed notes in the tracker
+   f. If failed → ask user if they want to fix now or continue to next test
+4. After all tests complete:
+   - Update TEST-CASES.md Test Execution Tracker with all results
+   - If all pass → proceed to "Update Status" step
+   - If any fail → log failures to FIXES.md, fix, retest failed cases only
+
 ### 5. Update Status
 1. Update `_STATUS.md`:
    ```markdown
@@ -88,11 +207,13 @@ Use TodoWrite to track progress.
    ```
 2. Update Quick Status:
    ```markdown
-   - Phase 0: 🔄 Awaiting Testing
+   - Phase 0: Awaiting Testing
    ```
 
 ### 6. Request Testing
-Tell user:
+If guided testing was already completed in Step 4.5 and all tests passed, skip to PHASE 0 COMPLETION.
+
+Otherwise, tell user:
 ```
 ========================================
 PHASE 0 TASKS COMPLETE
@@ -150,6 +271,30 @@ Fill in `phase-0-*/HANDOFF.md` with:
 - Fixes applied
 - Context for Phase 1
 
+### 1.5. Update Knowledge Base & Project Docs
+
+**REQUIRED for EVERY phase** (including Phase 0):
+
+Run the full `/update-knowledge-base` process to preserve knowledge:
+
+1. **Update Knowledge Base:**
+   - Extract key decisions, gotchas, patterns, and architecture from this phase
+   - Create or update topic files in appropriate sections
+   - Regenerate affected `_SUMMARY.md` files and `knowledge-base/INDEX.md`
+
+2. **Update Project Documentation:**
+   - Update affected project's `CLAUDE.md` with new patterns, conventions
+   - Update affected project's `PLANNING.md` with architecture changes
+
+**Why every phase matters:**
+- Context may be lost between sessions
+- Different agents may continue the work
+- Gotchas discovered early should be captured immediately
+
+**Skip only if:** Phase was purely bug fixes with no new patterns or decisions.
+
+For detailed instructions, see `/update-knowledge-base`.
+
 ### 2. Update Status
 Update `_STATUS.md`:
 ```markdown
@@ -157,14 +302,14 @@ Update `_STATUS.md`:
 **Status:** Not Started
 
 ## Quick Status
-- Phase 0: ✅ Complete
-- Phase 1: ⏳ Not Started
+- Phase 0: Complete
+- Phase 1: Not Started
 ```
 
 ### 3. Close Context
 ```
 ========================================
-PHASE 0 COMPLETE ✅
+PHASE 0 COMPLETE
 ========================================
 
 Handoff: phase-0-*/HANDOFF.md
@@ -193,20 +338,16 @@ To continue: /continue-prp {$ARGUMENTS}
 2. **Document as you go** - Update `COMPLETED.md` during implementation
 3. **Log all fixes** - Every issue goes in `FIXES.md`
 4. **Write handoff** - Critical for next session
-5. **Use TodoWrite** - Track your progress
+5. **Update KB & project docs** - On EVERY phase/PRP completion
+6. **Use TodoWrite** - Track your progress
 
 ---
 
-## ⚠️ SAFETY RULES
+## SAFETY RULES
 
-### 1. LOCAL DATABASE ONLY
-- **ALWAYS** use `--local` flag with ALL Supabase commands
-- Examples:
-  - ✅ `npx supabase migration up --local`
-  - ✅ `npx supabase db reset --local`
-  - ✅ `npx supabase gen types typescript --local > src/types/database.ts`
-  - ❌ `npx supabase migration up` (DANGEROUS - affects production!)
-  - ❌ `npx supabase db push` (DANGEROUS!)
+### 1. Follow Project Safety Rules
+- Read the target project's `CLAUDE.md` for project-specific safety rules
+- Follow all environment-specific constraints (local vs production, etc.)
 
 ### 2. NO GIT COMMITS
 - **NEVER** commit code to GitHub during implementation
@@ -215,4 +356,3 @@ To continue: /continue-prp {$ARGUMENTS}
 
 ### 3. NO PRODUCTION DEPLOYMENTS
 - Do NOT run any deployment commands
-- Do NOT run `vercel`, `npm run deploy`, or similar

@@ -25,7 +25,7 @@ From `{$ARGUMENTS}/_STATUS.md`, extract:
 
 1. **All defined phases** with their scope
 2. **Every requirement/feature** mentioned
-3. **All database changes** required
+3. **All data model changes** required
 4. **All file modifications** expected
 5. **All edge cases** documented
 6. **All success criteria**
@@ -49,13 +49,13 @@ Extract:
 - Implementation phases table
 - Key decisions documented
 - Overall success criteria
-- Database changes summary
+- Data model changes summary
 
 ---
 
 ## STEP 2: AUDIT COMPLETED PHASES
 
-For EACH phase marked as ✅ Complete in _STATUS.md:
+For EACH phase marked as Complete in _STATUS.md:
 
 ### 2.1 Read Phase COMPLETED.md
 
@@ -82,15 +82,15 @@ PHASE {N} - {Name} (COMPLETED)
 ========================================
 
 Requirements assigned to this phase:
-- REQ-001: "Add booking_mode column" → ✅ DONE (COMPLETED.md: migration created)
-- REQ-002: "Create booking_participants table" → ✅ DONE (COMPLETED.md: table created)
-- REQ-003: "Add RLS policies" → ✅ DONE (COMPLETED.md: policies added)
+- REQ-001: "Add status column" → DONE (COMPLETED.md: migration created)
+- REQ-002: "Create participants table" → DONE (COMPLETED.md: table created)
+- REQ-003: "Add security policies" → DONE (COMPLETED.md: policies added)
 
 Requirements that SHOULD have been this phase but weren't done:
-- REQ-004: "Add index on availability_id" → ❌ NOT FOUND (GAP - was this missed?)
+- REQ-004: "Add index on foreign_key" → NOT FOUND (GAP - was this missed?)
 
 Extra work done not in requirements:
-- "Added phone-input fixes" → ⚠️ Not in requirements (OK if needed for feature)
+- "Added input validation fixes" → Not in requirements (OK if needed for feature)
 ```
 
 ### 2.4 Compile Completed Phase Summary
@@ -99,20 +99,16 @@ Extra work done not in requirements:
 COMPLETED PHASES SUMMARY
 ========================================
 
-Phase 0 - Foundation: ✅
+Phase 0 - Foundation:
   Requirements covered: 5/5 (100%)
   Gaps found: 0
 
-Phase 1 - Booking Types: ✅
+Phase 1 - Core Features:
   Requirements covered: 4/4 (100%)
   Gaps found: 0
 
-Phase 2 - Availability Form: ✅
-  Requirements covered: 6/6 (100%)
-  Gaps found: 0
-
-Total requirements from completed phases: 15
-Total actually completed: 15
+Total requirements from completed phases: 9
+Total actually completed: 9
 Gaps in completed phases: 0
 ```
 
@@ -145,7 +141,7 @@ Extract what's been done so far:
 Check:
 - Total fixes logged
 - Fixes with "Fixed" status
-- Fixes with "Pending" status (⚠️ blockers!)
+- Fixes with "Pending" status (blockers!)
 - Any requirements addressed via fixes
 
 ### 3.4 Task-by-Task Analysis
@@ -158,19 +154,19 @@ CURRENT PHASE: {N} - {Name}
 
 TASK 1: {Task Name}
   Files to modify: {list}
-  Status: ✅ DONE | ⚠️ PARTIAL | ❌ NOT DONE
+  Status: DONE | PARTIAL | NOT DONE
   Evidence in COMPLETED.md: {quote or "Not mentioned"}
   Requirements this covers: REQ-010, REQ-011
 
 TASK 2: {Task Name}
   Files to modify: {list}
-  Status: ❌ NOT DONE
+  Status: NOT DONE
   Evidence in COMPLETED.md: Not mentioned
   Requirements this covers: REQ-012
 
 TASK 3: {Task Name}
   Files to modify: {list}
-  Status: ⚠️ PARTIAL - File A done, File B not done
+  Status: PARTIAL - File A done, File B not done
   Evidence in COMPLETED.md: "Modified File A..."
   Requirements this covers: REQ-013, REQ-014
 ```
@@ -185,30 +181,20 @@ CURRENT PHASE REQUIREMENTS COVERAGE
 
 Requirements assigned to Phase {N}:
 
-REQ-010: "Multi-client selector for group bookings"
-  In PLAN.md: ✅ Task 2
-  In COMPLETED.md: ✅ ParticipantSelector created
-  Status: ✅ COVERED
+REQ-010: "Multi-select component for records"
+  In PLAN.md: Task 2
+  In COMPLETED.md: Component created
+  Status: COVERED
 
-REQ-011: "Per-participant paid/attended toggles"
-  In PLAN.md: ✅ Task 3
-  In COMPLETED.md: ✅ ParticipantsList with toggles
-  Status: ✅ COVERED
+REQ-011: "Per-record status toggles"
+  In PLAN.md: Task 3
+  In COMPLETED.md: Toggles implemented
+  Status: COVERED
 
-REQ-012: "Edit participant action"
-  In PLAN.md: ❌ NOT FOUND
-  In COMPLETED.md: ❌ NOT FOUND
-  Status: ❌ GAP - Not planned, not implemented
-
-REQ-013: "Date change clears availability"
-  In PLAN.md: ❌ NOT FOUND
-  In COMPLETED.md: ❌ NOT FOUND
-  Status: ❌ GAP - Not planned, not implemented
-
-REQ-014: "Confirmation dialogs for fee mismatch"
-  In PLAN.md: ❌ NOT FOUND
-  In COMPLETED.md: ❌ NOT FOUND
-  Status: ❌ GAP - Not planned, not implemented
+REQ-012: "Edit record action"
+  In PLAN.md: NOT FOUND
+  In COMPLETED.md: NOT FOUND
+  Status: GAP - Not planned, not implemented
 ```
 
 ### 3.6 Check for Pending Blockers
@@ -218,23 +204,22 @@ BLOCKERS & PENDING ITEMS
 ========================================
 
 Pending Fixes:
-- ❌ Fix #3: "Modal scroll issue" - Status: Pending
+- Fix #3: "Modal scroll issue" - Status: Pending
 
 Incomplete Tasks:
-- ❌ Task 4: Not started
-- ⚠️ Task 5: Partially done
+- Task 4: Not started
+- Task 5: Partially done
 
 Missing from PLAN but required:
-- REQ-012: Edit participant
+- REQ-012: Edit action
 - REQ-013: Date change behavior
-- REQ-014: Confirmation dialogs
 ```
 
 ---
 
 ## STEP 4: AUDIT REMAINING PHASES
 
-For EACH phase marked as ⏳ Pending in _STATUS.md:
+For EACH phase marked as Pending in _STATUS.md:
 
 ### 4.1 Read Phase PLAN.md
 
@@ -252,20 +237,12 @@ PHASE {N+1} - {Name} (PENDING)
 ========================================
 
 Requirements planned for this phase:
-- REQ-020: "Online booking capacity check" → ✅ Task 1
-- REQ-021: "Registration flow" → ✅ Task 2
-- REQ-022: "Booking confirmation updates" → ✅ Task 3
+- REQ-020: "Capacity check" → Task 1
+- REQ-021: "Registration flow" → Task 2
+- REQ-022: "Confirmation updates" → Task 3
 
 Missing requirements that should be here:
-- REQ-023: "Cancel registration" → ❌ NOT IN PLAN
-
-PHASE {N+2} - {Name} (PENDING)
-========================================
-
-Requirements planned for this phase:
-- REQ-030: "Calendar display for groups" → ✅ Task 1
-- REQ-031: "Per-participant Stripe buttons" → ✅ Task 2
-...
+- REQ-023: "Cancel action" → NOT IN PLAN
 ```
 
 ### 4.3 Identify Orphaned Requirements
@@ -278,9 +255,8 @@ ORPHANED REQUIREMENTS (Not in any phase!)
 
 These requirements from the source document are NOT covered in any phase:
 
-- REQ-045: "Bulk participant import" - ❌ NOT FOUND IN ANY PLAN
-- REQ-046: "Waitlist functionality" - ❌ NOT FOUND IN ANY PLAN
-- REQ-047: "Participant notifications" - ❌ NOT FOUND IN ANY PLAN
+- REQ-045: "Bulk import" - NOT FOUND IN ANY PLAN
+- REQ-046: "Waitlist functionality" - NOT FOUND IN ANY PLAN
 
 ACTION NEEDED: Add to appropriate phase or confirm out of scope
 ```
@@ -298,22 +274,18 @@ FULL REQUIREMENTS TRACEABILITY
 
 | Req ID | Requirement | Phase | Task | Status |
 |--------|-------------|-------|------|--------|
-| REQ-001 | Add booking_mode column | Phase 0 | Task 1 | ✅ Complete |
-| REQ-002 | Create booking_participants | Phase 0 | Task 2 | ✅ Complete |
-| REQ-003 | RLS policies | Phase 0 | Task 3 | ✅ Complete |
-| REQ-010 | Multi-client selector | Phase 3 | Task 2 | ✅ Complete |
-| REQ-011 | Paid/attended toggles | Phase 3 | Task 3 | ✅ Complete |
-| REQ-012 | Edit participant | Phase 5 | Task 8 | ⏳ Planned |
-| REQ-013 | Date change clears avail | Phase 5 | Task 9 | ⏳ Planned |
-| REQ-020 | Online capacity check | Phase 4 | Task 1 | ⏳ Pending |
-| REQ-045 | Bulk import | ❌ NONE | - | ❌ MISSING |
-| REQ-046 | Waitlist | ❌ NONE | - | ❌ MISSING |
+| REQ-001 | Add status column | Phase 0 | Task 1 | Complete |
+| REQ-002 | Create participants table | Phase 0 | Task 2 | Complete |
+| REQ-010 | Multi-select component | Phase 3 | Task 2 | Complete |
+| REQ-012 | Edit action | Phase 5 | Task 8 | Planned |
+| REQ-020 | Capacity check | Phase 4 | Task 1 | Pending |
+| REQ-045 | Bulk import | NONE | - | MISSING |
 
 Total Requirements: 50
 Completed: 15 (30%)
 In Progress: 5 (10%)
 Planned: 25 (50%)
-MISSING: 5 (10%) ⚠️
+MISSING: 5 (10%)
 ```
 
 ---
@@ -334,10 +306,10 @@ EXECUTIVE SUMMARY
 ========================================
 
 Overall Progress: {X}% requirements addressed
-- ✅ Completed: {count} ({%})
-- 🔄 In Progress: {count} ({%})
-- ⏳ Planned: {count} ({%})
-- ❌ MISSING: {count} ({%}) ← ATTENTION NEEDED
+- Completed: {count} ({%})
+- In Progress: {count} ({%})
+- Planned: {count} ({%})
+- MISSING: {count} ({%}) ← ATTENTION NEEDED
 
 Current Phase: {N} - {Name}
 Current Phase Completion: {X}% tasks done
@@ -348,7 +320,7 @@ COMPLETED PHASES AUDIT
 
 {For each completed phase:}
 
-Phase {N}: {Name} ✅
+Phase {N}: {Name}
   Tasks: {done}/{total}
   Requirements: {covered}/{assigned}
   Gaps: {count or "None"}
@@ -358,19 +330,19 @@ Phase {N}: {Name} ✅
 CURRENT PHASE DEEP DIVE
 ========================================
 
-Phase {N}: {Name} 🔄
+Phase {N}: {Name}
 Status: {In Progress | Awaiting Testing}
 
 Task Completion:
-  ✅ Done: {count}
-  ⚠️ Partial: {count}
-  ❌ Not Started: {count}
+  Done: {count}
+  Partial: {count}
+  Not Started: {count}
 
 {Detailed task list with status}
 
 Requirements Coverage:
-  ✅ Covered: {count}
-  ❌ Gaps: {count}
+  Covered: {count}
+  Gaps: {count}
 
 GAPS IN CURRENT PHASE:
 {List each gap with requirement text}
@@ -384,7 +356,7 @@ REMAINING PHASES AUDIT
 
 {For each pending phase:}
 
-Phase {N}: {Name} ⏳
+Phase {N}: {Name}
   Tasks Planned: {count}
   Requirements Assigned: {count}
   Coverage: {covered}/{should be covered}
@@ -399,9 +371,6 @@ The following requirements are NOT in any phase:
 1. REQ-XXX: "{requirement}"
    - Recommendation: Add to Phase {N} or confirm out of scope
 
-2. REQ-XXX: "{requirement}"
-   - Recommendation: Add to Phase {N} or confirm out of scope
-
 {Or "None - All requirements are assigned to phases"}
 
 ========================================
@@ -413,9 +382,9 @@ Implementation Progress Score: {X}/10
 Alignment Score: {X}/10
 
 Status:
-✅ ON TRACK - All requirements accounted for, good progress
-⚠️ GAPS FOUND - Some requirements missing from plans
-❌ CRITICAL GAPS - Significant requirements not addressed
+ON TRACK - All requirements accounted for, good progress
+GAPS FOUND - Some requirements missing from plans
+CRITICAL GAPS - Significant requirements not addressed
 
 ========================================
 RECOMMENDED ACTIONS
@@ -476,7 +445,7 @@ Which phase should each go to?
 ### 7.3 If Everything Looks Good
 
 ```
-✅ FULL ALIGNMENT CONFIRMED
+FULL ALIGNMENT CONFIRMED
 
 All requirements from the source document are:
 - Either completed in previous phases
@@ -505,10 +474,10 @@ Next milestone: {description}
 
 ---
 
-## COMPARISON WITH OTHER SKILLS
+## COMPARISON WITH OTHER COMMANDS
 
-| Skill | When to Use | What It Checks |
-|-------|-------------|----------------|
+| Command | When to Use | What It Checks |
+|---------|-------------|----------------|
 | `/check-prp` | After /generate-prp | PRP structure, file existence, format |
 | `/check-progress` | Mid-development, when uncertain | ALL phases vs requirements, full alignment |
 | `/ensure-tracking` | Before closing context | Documentation completeness for handoff |
@@ -518,27 +487,27 @@ Next milestone: {description}
 ## QUICK CHECKLIST
 
 ```
-□ Read _STATUS.md - got phase statuses
-□ Read requirements document COMPLETELY
-□ Created master requirements list
-□ Read OVERVIEW.md
-□ For EACH completed phase:
-  □ Read COMPLETED.md
-  □ Read HANDOFF.md
-  □ Verified requirements coverage
-□ For current phase (DEEP DIVE):
-  □ Read PLAN.md - extracted all tasks
-  □ Read COMPLETED.md - extracted work done
-  □ Read FIXES.md - checked for pending
-  □ Task-by-task analysis
-  □ Requirements coverage check
-□ For EACH remaining phase:
-  □ Read PLAN.md
-  □ Mapped to remaining requirements
-□ Created full traceability matrix
-□ Identified ALL gaps
-□ Identified orphaned requirements
-□ Generated comprehensive report
-□ Provided specific action items
-□ Offered remediation options
+[] Read _STATUS.md - got phase statuses
+[] Read requirements document COMPLETELY
+[] Created master requirements list
+[] Read OVERVIEW.md
+[] For EACH completed phase:
+  [] Read COMPLETED.md
+  [] Read HANDOFF.md
+  [] Verified requirements coverage
+[] For current phase (DEEP DIVE):
+  [] Read PLAN.md - extracted all tasks
+  [] Read COMPLETED.md - extracted work done
+  [] Read FIXES.md - checked for pending
+  [] Task-by-task analysis
+  [] Requirements coverage check
+[] For EACH remaining phase:
+  [] Read PLAN.md
+  [] Mapped to remaining requirements
+[] Created full traceability matrix
+[] Identified ALL gaps
+[] Identified orphaned requirements
+[] Generated comprehensive report
+[] Provided specific action items
+[] Offered remediation options
 ```
