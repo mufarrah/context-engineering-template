@@ -22,9 +22,13 @@ copy_template() {
         exit 1
     fi
 
-    # Copy all files from template to target, preserving structure
-    # Use rsync if available, otherwise fall back to cp
-    if command -v rsync &> /dev/null; then
+    # Copy all files from template to target, preserving structure.
+    # Use rsync when available, but if either path still contains a drive-letter
+    # colon (cygpath unavailable on this Windows shell), fall back to cp so
+    # rsync doesn't misread it as a remote SSH target.
+    if command -v rsync &> /dev/null \
+        && [[ "$template_dir" != ?:* ]] \
+        && [[ "$target_dir" != ?:* ]]; then
         rsync -a --exclude='.git' "$template_dir/" "$target_dir/"
     else
         cp -r "$template_dir/." "$target_dir/"
@@ -74,6 +78,18 @@ fi
 
 # Expand ~ to home directory
 target_dir="${target_dir/#\~/$HOME}"
+
+# On Windows shells (Git Bash / MSYS / Cygwin), rsync treats "C:/foo" as a
+# remote SSH target because of the colon. Normalize Windows-style paths to
+# MSYS form (e.g. "C:/Users/x" -> "/c/Users/x") so rsync works correctly.
+case "$(uname -s 2>/dev/null)" in
+    MINGW*|MSYS*|CYGWIN*)
+        if command -v cygpath &> /dev/null; then
+            target_dir="$(cygpath -u "$target_dir")"
+            template_dir="$(cygpath -u "$template_dir")"
+        fi
+        ;;
+esac
 
 # Create target directory if it doesn't exist
 if [ ! -d "$target_dir" ]; then
