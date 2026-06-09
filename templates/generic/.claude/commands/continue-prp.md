@@ -4,9 +4,51 @@
 
 Continue working on a phased PRP. This command is for resuming work on a complex feature after closing a previous context.
 
-**This command assumes the PRP folder already exists** (created by `/generate-prp`).
+**This command assumes the PRP folder already exists** (created by `/generate-prp`) — UNLESS
+`$ARGUMENTS` is a single `.md` file (a simple PRP), handled by STEP 0 below.
+
+This command handles **three resume scenarios**, routed by `$ARGUMENTS` in STEP 0:
+1. a **phased PRP continued after a phase is done** — the original use; STEP 4's status logic
+   advances to the next phase (Complete → next phase);
+2. a **phased PRP resumed mid-phase** — e.g. right after a `/checkpoint`;
+3. a **simple single-file PRP** (a `.md` file) — resumed from its checkpoint.
+
+The phased flow (STEP 1 onward) serves BOTH (1) and (2) and is unchanged; `/checkpoint` writes the
+resume state this command reads back.
 
 ---
+
+## STEP 0: DETECT PRP TYPE
+
+Look at `$ARGUMENTS`:
+- **A folder** (e.g. `context-engineering/PRPs/FEATURE-NAME`) → **Phased PRP** → follow the
+  "PHASED PRP" flow below (STEP 1 onward).
+- **A single file** (e.g. `context-engineering/PRPs/feature-name.md`) → **Simple PRP** → follow the
+  "SIMPLE PRP RESUME" section immediately below, and SKIP the phased steps.
+
+---
+
+## SIMPLE PRP RESUME (single-file PRP)
+
+1. Read `context-engineering/_STATUS.md` for project context.
+2. Read the PRP file (`$ARGUMENTS`) completely — especially the status header at the top and the
+   **`## 🔁 CHECKPOINT — RESUME STATE`** section at the bottom (written by `/checkpoint`). If there is
+   no checkpoint section, fall back to the Test Execution Tracker + Success Criteria to infer
+   remaining work.
+3. **Start from the checkpoint's `NEXT ACTION`.** Honor its **Decisions (do not re-litigate)** and
+   **Environment / gotchas** so you don't re-derive or undo settled work.
+4. Continue executing the remaining tasks / running the guided test cases, using `TodoWrite` to track
+   progress. Log any new fixes and decisions back into the file as you go.
+5. When you pause again, run `/checkpoint $ARGUMENTS` to refresh the checkpoint. When the PRP is truly
+   finished, set the status header to **Complete**, finish the Test Execution Tracker, and (if tracked)
+   update its entry in `context-engineering/_STATUS.md`.
+
+**Do not** look for `$ARGUMENTS/_STATUS.md`, phases, or `HANDOFF.md` for a simple PRP — those exist
+only for phased (folder) PRPs.
+
+---
+
+# PHASED PRP (folder) — STEP 1 onward (handles BOTH after-a-phase-done and mid-phase resume)
 
 ## STEP 1: READ PROJECT STATUS
 

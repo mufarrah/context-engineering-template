@@ -12,7 +12,8 @@ Quick reference for all available commands and skills in your Cortex project.
 | `/generate-prp` | Create implementation-ready PRP from requirements | After requirements are complete |
 | `/check-prp` | Validate PRP structure and alignment | After `/generate-prp`, before execution |
 | `/execute-prp` | Start executing a PRP (Phase 0 for phased) | Ready to implement a feature |
-| `/continue-prp` | Resume work on a phased PRP | Continuing Phase 1+ of a phased PRP |
+| `/continue-prp` | Resume work on a phased or simple PRP | Continuing a PRP — after a phase, mid-phase, or from a `/checkpoint` |
+| `/checkpoint` | Capture a durable resume checkpoint of the current PRP | Context window filling up mid-PRP; pausing to continue in a fresh window |
 | `/check-progress` | Full progress validation against requirements | Mid-development confidence check |
 | `/ensure-tracking` | Verify documentation completeness | Before closing a context/session |
 | `/audit-context` | Comprehensive project health check | Periodic audit, after breaks |
@@ -32,7 +33,8 @@ Quick reference for all available commands and skills in your Cortex project.
 - **Have a requirements document?** → `/generate-prp`
 - **Just generated a PRP?** → `/check-prp` (validate before executing)
 - **Ready to start coding?** → `/execute-prp`
-- **Continuing a phased feature?** → `/continue-prp`
+- **Continuing a feature (phased or simple)?** → `/continue-prp`
+- **Context window filling up mid-PRP?** → `/checkpoint {PRP-path}` (then `/continue-prp` in a fresh window)
 - **Uncertain if all requirements are covered?** → `/check-progress`
 - **About to close your context?** → `/ensure-tracking`
 - **Coming back after a break?** → `/audit-context`
@@ -122,8 +124,36 @@ Quick reference for all available commands and skills in your Cortex project.
 
 **Key behavior:** Updates KB and project docs on EVERY phase, not just final.
 
+**Detects the PRP type from the path:** a folder → phased PRP (the full phase flow, including
+advancing to the next phase after one completes); a single `.md` file → simple PRP, resumed from
+the `🔁 CHECKPOINT — RESUME STATE` section that `/checkpoint` writes.
+
 ```bash
-/continue-prp context-engineering/PRPs/FEATURE-NAME/
+/continue-prp context-engineering/PRPs/FEATURE-NAME/        # phased (folder)
+/continue-prp context-engineering/PRPs/my-feature.md        # simple (file)
+```
+
+### /checkpoint
+
+**Purpose:** Capture a complete, durable checkpoint of the CURRENT PRP so a brand-new context window
+can resume with zero loss. Use it the moment your context window starts filling up mid-PRP — instead
+of re-typing "save everything so the next agent doesn't forget."
+
+**What it does:**
+1. Detects PRP type (folder → phased, file → simple).
+2. Assembles the live state from the conversation: what's done & verified, the single **NEXT ACTION**,
+   fixes applied (root cause → solution → files), user decisions (so they're never re-litigated),
+   environment/gotchas/IDs, and validation status.
+3. Writes it to the durable docs — for phased: the current phase `COMPLETED.md`/`FIXES.md`/
+   `TEST-CASES.md` (`🔁 RESUME STATE`) + the PRP `_STATUS.md` + the project `_STATUS.md`; for simple:
+   a status header + a `🔁 CHECKPOINT — RESUME STATE` section in the PRP file.
+4. Never advances the phase, completes the PRP, commits, or pastes secrets — it's a pause, not a finish.
+
+**Resume with `/continue-prp {same-path}` in the new window.**
+
+```bash
+/checkpoint context-engineering/PRPs/FEATURE-NAME/    # phased (folder)
+/checkpoint context-engineering/PRPs/my-feature.md    # simple (file)
 ```
 
 ### /check-progress
@@ -248,6 +278,7 @@ Use the `skill-creator` skill to create new domain-specific skills. It provides 
 | Validate PRP structure | `/check-prp` | Single PRP | No (read-only) |
 | Start implementation | `/execute-prp` | Single PRP | Yes (code + docs) |
 | Continue phased PRP | `/continue-prp` | Single PRP | Yes (code + docs) |
+| Pause mid-PRP for a fresh window | `/checkpoint` | Single PRP | Yes (writes resume state) |
 | Check requirements coverage | `/check-progress` | Single PRP | No (read-only) |
 | Pre-close doc check | `/ensure-tracking` | Single PRP | Yes (fills gaps) |
 | Project health check | `/audit-context` | All PRPs | Optional |
