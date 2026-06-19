@@ -47,3 +47,26 @@ context-engineering-template/
 - Generic commands reference root project; global commands reference `active-projects/{project}/`
 - Keep `.template-version` in sync between templates
 - Test that all cross-references between files are valid
+
+### Versioning & Migrations (how downstream repos stay updatable)
+
+Downstream repos are upgraded by the `update-template` **migration runner** (in each template's
+`.claude/skills/`). It does NOT trust `.template-version` — it reconciles **observed on-disk state**
+to the latest template and applies idempotent migrations, preserving user customizations. See
+[`migrations/README.md`](migrations/README.md).
+
+- **Bump `.template-version` in BOTH templates on every user-facing change** — MAJOR for breaking
+  (structural) changes, MINOR for additive ones. (The runner uses content fingerprinting, not the
+  number, but the version is the human-facing signal and is recorded in the repo's ledger.)
+- **Additive change** (new file, or an updated skill/doc/template users don't hand-edit) → **no
+  migration**. The runner's reconciliation installs/updates it automatically.
+- **Structural change** (delete / rename / move / layout change, or rewriting content inside files
+  users customize) → **add `migrations/NNN-<name>.md`** (idempotent guard + backup + consent;
+  follow the format in `migrations/README.md`).
+- **`/migration-check`** (maintainer skill at `.claude/skills/migration-check/`, repo-only, **auto-
+  invoked**) classifies your pending `templates/` changes and scaffolds a migration when needed. A
+  **Stop hook** (`.claude/hooks/migration-watch.sh`, wired in `.claude/settings.json`) also warns
+  if `templates/` has structural changes with no migration staged.
+- **First-hop upgrade** of an old repo uses the bootstrap (`tools/cortex-update.sh` / `.ps1`), which
+  installs the latest runner into that repo so you can then run `/update-template` there.
+- Repo-root `.claude/` (this maintainer tooling) is **never shipped** — setup copies only `templates/<kind>/`.

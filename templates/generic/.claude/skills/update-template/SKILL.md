@@ -1,164 +1,205 @@
 ---
 name: update-template
-description: "Pull the latest Cortex template updates into this project while preserving your customizations."
+description: "Safely upgrade this Cortex repo to the latest template: detects on-disk state, reconciles infrastructure, and applies idempotent migrations — preserving your customizations and never overwriting your edits without asking."
 disable-model-invocation: true
 ---
 
-# Update Template
+# Update Cortex (Migration Runner)
 
-Safely pull the latest Cortex template updates from GitHub without overwriting your customizations.
+Safely bring this repo up to date with the latest Cortex template — **without losing or silently
+overwriting anything you changed.**
 
-**Usage:** `/update-template`
+**Governing principle:** *The file system is the version.* We never rely on `.template-version`
+(it was historically unreliable). We observe the files actually on disk and reconcile them to the
+target, preserving anything you edited. This makes the run safe on any repo, however old or
+customized, and **idempotent** (re-running is safe).
 
----
-
-## STEP 1: READ CURRENT VERSION
-
-1. Read the `.template-version` file in the workspace root
-2. If missing, assume version `1.0.0` and create the file
-
----
-
-## STEP 2: FETCH LATEST VERSION
-
-1. Use the `gh` CLI to check the latest release of the Cortex template repository:
-   ```bash
-   gh release view --repo {cortex-template-repo} --json tagName,body
-   ```
-2. Compare the current version with the latest release version
-3. If already up to date, report and exit:
-   ```
-   Cortex template is up to date (v{version}).
-   ```
-4. If a newer version exists, list the changelog/release notes for the user
+There are two kinds of update and both are handled here:
+- **Reconciliation** — new/updated template files (e.g. a newly added skill like `checkpoint`) are
+  detected and offered. *No migration needed for additive changes.*
+- **Migrations** — breaking, structural changes (delete/rename/restructure) run as idempotent,
+  state-detecting steps from the template's `migrations/` directory.
 
 ---
 
-## STEP 3: CLASSIFY FILES
+## CONFIG
 
-Classify all template files into three categories:
+```
+TEMPLATE_REPO = {TEMPLATE_REPO_URL}    # e.g. https://github.com/<you>/context-engineering-template
+```
 
-### Infrastructure (Safe to Update)
-These are "system" files that contain command logic, skill definitions, and templates. They can be safely updated without losing user work:
-
-- `.claude/skills/*/SKILL.md` — All skill definitions (slash-command skills and domain skills)
-- `knowledge-base/_TEMPLATES/*.md` — KB topic templates
-- `context-engineering/PRPs/templates/*.md` — PRP templates
-- `docs/*.md` — Documentation guides
-
-### User Content (Never Touch)
-These contain user-specific work and customizations. NEVER modify or overwrite:
-
-- `CLAUDE.md` — Thin Claude Code entry point (imports AGENTS.md)
-- `AGENTS.md` — Agent instructions (customized)
-- `knowledge-base/concepts/`, `flows/`, `implementations/`, `gotchas/`, `decisions/` — All topic files (excluding _TEMPLATES)
-- `context-engineering/feature-inputs/` — All feature inputs
-- `context-engineering/PRPs/` — All PRPs (excluding templates/)
-- `context-engineering/_STATUS.md` — Workspace status
-- `src/` — All source code
-
-### Review Candidates (Show Diff, Ask User)
-These may have both template structure and user customizations:
-
-- `CONFIG.md` — May have new commands added
-- `.gitignore` — May have new patterns
-- `README.md` — May have new sections
+Set `TEMPLATE_REPO` to your template fork. If it's still a placeholder, ask the user for the URL
+(or for a local `--source <path>` to a template checkout) before proceeding.
 
 ---
 
-## STEP 4: DOWNLOAD AND COMPARE
+## PHASE 0 — Preflight (no changes)
 
-For each **Infrastructure** file:
-
-1. Download the latest version from the release
-2. Compare with the current local version
-3. If different, show the diff to the user:
-   ```
-   === .claude/skills/generate-prp/SKILL.md ===
-   Changes: {brief description of what changed}
-
-   [Show diff]
-
-   Update this file? (y/n)
-   ```
-4. Track which files the user approves for update
-
-For each **Review Candidate** file:
-
-1. Download the latest version
-2. Show the diff with clear annotations of what's new
-3. Ask the user whether to:
-   - **Update**: Replace with new version
-   - **Skip**: Keep current version
-   - **Merge**: Manually review and merge specific sections
+1. **Confirm this is a Cortex repo:** it has `context-engineering/` and a `.claude/` with
+   `skills/` and/or `commands/`. If not, stop and report.
+2. **Detect template kind:**
+   - has `active-projects/` or `shared/` → `global-multi-project`
+   - otherwise → `generic`
+   Record as `KIND`. The corresponding source path is `templates/$KIND/`.
+3. **Git safety net:** run `git status --porcelain`.
+   - If the tree is **dirty**, STOP and ask the user to either commit/stash first or explicitly
+     say "proceed anyway". Strongly recommend committing — it's the cleanest rollback.
+   - If it's **not a git repo**, warn that rollback will rely on `.cortex-backup/` only, and
+     recommend `git init && git add -A && git commit` first.
+4. **Read the ledger** `.cortex/state.json` if present (applied migrations, last synced commit).
+   If absent → this is a first run → rely on pure detection (every guard re-evaluated).
 
 ---
 
-## STEP 5: CHECK FOR NEW FILES
+## PHASE 1 — Fetch the template source (read-only)
 
-1. Compare the file list in the latest release with local files
-2. For any files that exist in the latest release but NOT locally:
-   ```
-   New files available in v{version}:
-   - .claude/skills/new-command/SKILL.md — {description}
-   - .claude/skills/new-skill/ — {description}
+Clone the template **with history** (needed for fingerprinting) into a temp dir:
 
-   Add these files? (y/n for each)
-   ```
-3. Create any files the user approves
+```bash
+TMP="$(mktemp -d)"
+git clone "$TEMPLATE_REPO" "$TMP"        # full clone — history required
+SRC="$TMP/templates/$KIND"               # the matching template root
+SRC_VERSION="$(cat "$SRC/.template-version")"
+SRC_COMMIT="$(git -C "$TMP" rev-parse HEAD)"
+```
 
----
-
-## STEP 6: APPLY UPDATES
-
-1. Apply all approved file updates
-2. Update `.template-version` to the new version number
-3. Report summary:
-   ```
-   === Cortex Template Updated: v{old} → v{new} ===
-
-   Updated Files:
-   - .claude/skills/generate-prp/SKILL.md
-   - .claude/skills/execute-prp/SKILL.md
-   - ...
-
-   New Files Added:
-   - .claude/skills/new-command/SKILL.md
-   - ...
-
-   Skipped (user choice):
-   - CONFIG.md
-   - ...
-
-   Unchanged (user content preserved):
-   - CLAUDE.md
-   - AGENTS.md
-   - knowledge-base/* (all topics)
-   - context-engineering/* (all PRPs and features)
-   - src/* (all source code)
-   ```
+If cloning fails (offline, bad URL), fall back to a user-provided local `--source <path>` that
+points at a template checkout, or stop and report. **Never** invent file contents.
 
 ---
 
-## SAFETY RULES
+## PHASE 2 — Plan / dry-run (STILL no changes)
 
-- **NEVER modify User Content files** — These are sacred and belong to the user
-- **NEVER force-update** — Always show diffs and ask for approval
-- **NEVER delete files** — Only add or update
-- **NEVER commit to git** — The user handles all git operations
-- **Always create backups** before updating Review Candidate files (save as `{filename}.backup`)
+Compute, but do not apply, the full plan. Map each repo file `P` to the template path `$SRC/P`.
+
+### 2a. Classify infrastructure files
+
+Infrastructure = template-owned files the user normally shouldn't hand-edit:
+`.claude/skills/*/SKILL.md`, `docs/*.md`, `context-engineering/PRPs/templates/*.md`,
+`knowledge-base/_TEMPLATES/*.md`. For each, classify (see `migrations/README.md`):
+
+```bash
+# Set of every blob hash this path has had in template history (handles old locations too):
+hist() {
+  local tpath="$1"
+  git -C "$TMP" log --all --format=%H -- "$tpath" \
+    | while read -r c; do git -C "$TMP" rev-parse "$c:$tpath" 2>/dev/null; done | sort -u
+}
+classify() {
+  local repofile="$1" tpath="$2"
+  [ -f "$repofile" ] || { echo MISSING; return; }
+  local h; h="$(git hash-object "$repofile")"
+  if hist "$tpath" | grep -qx "$h"; then echo PRISTINE; else echo MODIFIED; fi
+}
+```
+
+- **PRISTINE** → safe to update to latest (auto, but listed).
+- **MODIFIED** → you edited it → will prompt with a diff (keep mine / take new / merge / skip).
+- **MISSING** → template has it, repo doesn't → offer to **add** it. *(This is how newly-added
+  skills such as `checkpoint` / `continue-prp` land in old repos — no migration required.)*
+- **USER-ADDED** (a skill/file whose path the template never had — `hist` returns empty for it)
+  → **leave untouched, never remove.**
+
+### 2b. Evaluate migrations
+
+Read `$TMP/migrations/*.md` in order. For each whose `id` is **not** already in the ledger,
+evaluate its **Guard** against this repo. List the ones that will run (and what they'll do).
+Migrations whose guard is false are already satisfied → skip.
+
+### 2c. List USER-CONTENT (will never be auto-written)
+
+`AGENTS.md`, `CLAUDE.md`, `CONFIG.md`, `README.md`, `src/`, `knowledge-base/` topic dirs,
+`context-engineering/` PRPs & feature-inputs, `_STATUS.md`. These are only ever changed by a
+structural migration, with backup + explicit consent.
+
+### 2d. Present the PLAN and get the go-ahead
+
+Show four lists: **Migrations to run**, **Infra to update** (pristine auto + modified-needs-you),
+**New files to add**, **Untouched (your content & additions)**. Change nothing until the user
+confirms. Offer "select per-item" vs "accept recommended".
 
 ---
 
-## FALLBACK: No GitHub Access
+## PHASE 3 — Backup (before the first change)
 
-If the `gh` CLI is not available or the repo is not accessible:
+1. `TS="$(date +%Y%m%d-%H%M%S)"; mkdir -p ".cortex-backup/$TS"`
+2. Copy **every** file the plan will modify or delete into `.cortex-backup/$TS/` preserving
+   relative paths. (At minimum: all of `.claude/commands/`, `CLAUDE.md`, `PLANNING.md`, any
+   per-project `CLAUDE.md`/`PLANNING.md`, and every MODIFIED infra file.)
+3. Offer an opt-in git snapshot: `git add -A && git commit -m "cortex: pre-migration snapshot"`
+   (only with explicit consent — never commit silently).
 
-1. Inform the user:
-   ```
-   Cannot access GitHub. To update manually:
-   1. Download the latest release from {repo-url}
-   2. Place the downloaded template in a temporary directory
-   3. Run: /update-template --local {path-to-downloaded-template}
-   ```
-2. If `--local` path is provided, use that directory as the source instead of GitHub
+---
+
+## PHASE 4 — Apply (with per-item consent)
+
+Order: **migrations first** (structural), then **infra reconciliation**, then **new files**.
+
+1. **Run each planned migration** following its spec in `$TMP/migrations/NNN-*.md`. Each is
+   idempotent and re-checks its own guard. Honor its user-edit handling exactly (MODIFIED and
+   USER-CONTENT files require an explicit choice; back up before any delete/overwrite). The
+   content-folding in `002` (CLAUDE.md + PLANNING.md → AGENTS.md) is an **intelligent merge you
+   perform** with a preview + confirmation — preserve all of the user's text; when unsure, keep
+   more and ask.
+2. **Reconcile infra:**
+   - PRISTINE → overwrite with the latest version.
+   - MODIFIED → show the diff; ask keep-mine / take-new / merge / skip. Default to **keep-mine**.
+   - MISSING → ask to add (default yes); copy from `$SRC`.
+   - USER-ADDED → skip silently (never touch).
+3. **USER-CONTENT** → never auto-write. If a migration must transform it, that happens inside the
+   migration with its own backup + confirmation.
+
+---
+
+## PHASE 5 — Record (ledger + version)
+
+Write `.cortex/state.json`:
+
+```json
+{
+  "templateVersion": "<SRC_VERSION>",
+  "templateRepo": "<TEMPLATE_REPO>",
+  "templateKind": "<KIND>",
+  "syncedToCommit": "<SRC_COMMIT>",
+  "appliedMigrations": ["...","<each migration whose guard ran or was already satisfied>"],
+  "lastRun": "<current ISO timestamp>"
+}
+```
+
+Then set the repo's `.template-version` to `<SRC_VERSION>`. (Now provenance is real, so the next
+run is fast — but detection still backstops everything.)
+
+---
+
+## PHASE 6 — Report
+
+Print:
+- ✅ **Migrations applied** (and any **skipped/pending** because you chose "skip")
+- ✅ **Infra updated / added** (incl. newly installed skills like `checkpoint`)
+- 🔒 **Preserved** — your edited files and your own additions (list them)
+- 📋 **Needs your review** — MODIFIED files you skipped, `PLANNING.md` references found in your
+  prose, anything ambiguous
+- 💾 **Backup:** `.cortex-backup/$TS/` — and how to roll back (restore from backup, or `git restore`
+  if you took the snapshot)
+
+---
+
+## SAFETY RULES (non-negotiable)
+
+- **Plan before touching anything.** Phase 2 changes nothing; the user approves first.
+- **Back up before every destructive step.** Never delete/overwrite unless a copy already exists in `.cortex-backup/$TS/`.
+- **Never overwrite MODIFIED or USER-CONTENT files** without an explicit user choice. Default to keeping the user's version.
+- **Never remove USER-ADDED files or skills.**
+- **Never commit to git** on the user's behalf, except the opt-in Phase-3 snapshot they explicitly approve.
+- **Idempotent & resumable** — re-running re-evaluates guards; already-done work is a no-op.
+- **When anything is ambiguous, STOP and ask.** Losing user work is far worse than pausing.
+
+---
+
+## FALLBACK
+
+- **Offline / clone fails:** accept `--source <path>` to a local template checkout and run the same
+  phases against it (history-based classification still works if it's a full clone; otherwise
+  classify MODIFIED conservatively and prompt on everything).
+- **Not a git repo:** classification can't fingerprint history → treat every infra file as
+  potentially MODIFIED and prompt before changing it; recommend `git init` for safer future runs.
