@@ -197,7 +197,7 @@ of re-typing "save everything so the next agent doesn't forget."
 - **With PRP path:** Extracts knowledge from a specific PRP
 - **Without argument:** Extracts from current conversation context
 
-**Updates both** the knowledge base AND project-specific `CLAUDE.md` and `PLANNING.md`.
+**Updates both** the knowledge base AND project-specific `AGENTS.md`.
 
 ```bash
 /update-knowledge-base context-engineering/PRPs/FEATURE-NAME  # From PRP
@@ -295,5 +295,5 @@ Use the `skill-creator` skill to create new domain-specific skills. It provides 
 
 1. **No git commits** — User handles all git operations
 2. **No production deployments** — Never run deploy commands
-3. **Follow project safety rules** — Read project CLAUDE.md for project-specific safety rules
+3. **Follow project safety rules** — Read project AGENTS.md for project-specific safety rules
 4. **Never overwrite user content** — Only create or append, never replace user customizations

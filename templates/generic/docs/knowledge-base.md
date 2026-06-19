@@ -135,8 +135,7 @@ PRPs include `Knowledge Base References` in each phase's PLAN.md. The agent read
 - Record implementation patterns
 - Log discovered gotchas
 - Record architectural decisions
-- **Update CLAUDE.md** with new patterns
-- **Update PLANNING.md** with architecture changes
+- **Update `AGENTS.md`** (durable, high-level architecture facts only — never fix logs or transient notes)
 
 ### Before Closing Context
 `/ensure-tracking` verifies that:

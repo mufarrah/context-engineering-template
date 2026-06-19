@@ -196,7 +196,7 @@ of re-typing "save everything so the next agent doesn't forget."
 - **With PRP path:** Extracts knowledge from a specific PRP
 - **Without argument:** Extracts from current conversation context
 
-**Updates both** the knowledge base AND `CLAUDE.md` and `PLANNING.md`.
+**Updates both** the knowledge base AND `AGENTS.md`.
 
 ```bash
 /update-knowledge-base context-engineering/PRPs/FEATURE-NAME  # From PRP
@@ -225,7 +225,7 @@ of re-typing "save everything so the next agent doesn't forget."
 
 ### /setup-project
 
-**Purpose:** Initialize a freshly copied Cortex project. Analyzes the project, populates CLAUDE.md and PLANNING.md, initializes knowledge base.
+**Purpose:** Initialize a freshly copied Cortex project. Analyzes the project, populates AGENTS.md, initializes knowledge base.
 
 ```bash
 /setup-project

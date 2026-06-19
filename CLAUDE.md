@@ -27,19 +27,20 @@ context-engineering-template/
 - Commands reference `context-engineering/` paths (not root paths)
 - Generic template uses `docs/` for documentation
 - Global template uses `shared/docs/` for documentation
-- Both templates have exactly 13 commands and 2 skills
+- Both templates expose 14 slash commands plus 2 built-in domain skills (`skill-creator`, `frontend-design`), all defined under `.claude/skills/<name>/SKILL.md`
+- Slash commands are skills: each lives at `.claude/skills/<command>/SKILL.md` with `name`, `description`, and `disable-model-invocation: true` frontmatter. The directory name is the `/command` trigger; the body keeps `$ARGUMENTS` and other command syntax
 
 ### Template Differences
 
 | Aspect | Generic | Global |
 |--------|---------|--------|
 | Target | Single project repo | Multi-project workspace |
-| CLAUDE.md | Combined navigation + coding standards | Master navigation hub |
-| PLANNING.md | Combined architecture + philosophy | Development philosophy only |
+| AGENTS.md | Combined navigation + architecture + coding standards | Workspace navigation hub |
+| CLAUDE.md | Thin importer (`@AGENTS.md`) | Thin importer (`@AGENTS.md`) |
 | Implementations KB | Flat (`implementations/*.md`) | Per-project (`implementations/{project}/*.md`) |
 | Setup command | `/setup-project` | `/setup-workspace` |
 | Docs location | `docs/` | `shared/docs/` |
-| Project docs | Root CLAUDE.md and PLANNING.md | Per-project in `active-projects/{project}/` |
+| Project docs | Root `AGENTS.md` (+ thin `CLAUDE.md`) | Per-project `AGENTS.md` (+ thin `CLAUDE.md`) in `active-projects/{project}/` |
 
 ### When Editing Templates
 - Changes to commands should be reflected in BOTH templates

@@ -37,14 +37,13 @@ For individual repositories. Adds context engineering directly to your project.
 
 ```
 my-project/
-├── CLAUDE.md              # Navigation + coding standards
-├── PLANNING.md            # Architecture + philosophy
+├── AGENTS.md              # Agent instructions: navigation, architecture, coding standards
+├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
 ├── CONFIG.md              # Commands reference
 ├── context-engineering/   # Feature management (PRPs, feature inputs)
 ├── knowledge-base/        # Concept-centric knowledge base
 ├── docs/                  # Documentation guides
-├── .claude/commands/      # 13 slash commands
-├── .claude/skills/        # 2 built-in skills
+├── .claude/skills/        # 14 slash-command skills + 2 built-in skills
 └── src/                   # Your source code
 ```
 
@@ -54,25 +53,26 @@ For workspaces managing multiple projects with shared resources.
 
 ```
 my-workspace/
-├── CLAUDE.md              # Master navigation hub
-├── PLANNING.md            # Development philosophy
+├── AGENTS.md              # Master navigation hub (agent instructions, architecture, conventions)
+├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
 ├── CONFIG.md              # Commands reference
 ├── active-projects/       # Your project repositories
 │   └── {project}/
-│       ├── CLAUDE.md      # Project-specific coding standards
-│       └── PLANNING.md    # Project-specific architecture
+│       ├── AGENTS.md      # Project instructions: architecture + coding standards
+│       └── CLAUDE.md      # Thin Claude Code entry point (imports AGENTS.md)
 ├── context-engineering/   # Feature management
 ├── knowledge-base/        # Cross-project knowledge base
 ├── shared/                # Shared docs, templates, scripts
-├── .claude/commands/      # 13 slash commands
-└── .claude/skills/        # 2 built-in skills
+└── .claude/skills/        # 14 slash-command skills + 2 built-in skills
 ```
 
 ---
 
 ## What You Get
 
-### 13 AI Commands
+### 14 AI Commands
+
+Each command is a skill under `.claude/skills/<command>/SKILL.md`, invoked the same way (`/command`):
 
 | Command | Purpose |
 |---------|---------|
@@ -81,6 +81,7 @@ my-workspace/
 | `/check-prp` | Validate PRP structure and requirements alignment |
 | `/execute-prp` | Execute PRP (Phase 0 for phased PRPs) |
 | `/continue-prp` | Continue phased PRP (Phase 1+) |
+| `/checkpoint` | Capture a durable resume checkpoint of the current PRP |
 | `/check-progress` | Mid-development progress audit |
 | `/ensure-tracking` | Verify documentation completeness before closing context |
 | `/update-knowledge-base` | Extract knowledge from PRP into KB |
@@ -175,7 +176,7 @@ Each template includes 3 reference docs:
 
 | Document | Covers |
 |----------|--------|
-| `commands-and-skills.md` | All 13 commands, 2 skills, decision tree, comparison matrix |
+| `commands-and-skills.md` | All 14 commands, 2 skills, decision tree, comparison matrix |
 | `knowledge-base.md` | KB architecture, 5 categories, PRP integration, templates |
 | `prp-workflow.md` | Full PRP lifecycle, simple vs phased, phase files, testing |
 
@@ -193,17 +194,15 @@ context-engineering-template/
 ├── setup-context-engineering.sh       # Setup script
 └── templates/
     ├── generic/                       # Single-project template
-    │   ├── CLAUDE.md, PLANNING.md, CONFIG.md, README.md
-    │   ├── .claude/commands/          # 13 commands (single-project paths)
-    │   ├── .claude/skills/            # 2 skills
+    │   ├── AGENTS.md, CLAUDE.md, CONFIG.md, README.md
+    │   ├── .claude/skills/            # 14 command-skills + 2 built-in skills (single-project paths)
     │   ├── context-engineering/       # CE skeleton
     │   ├── knowledge-base/            # KB skeleton (flat implementations)
     │   └── docs/                      # 3 reference docs
     │
     └── global-multi-project/          # Multi-project workspace template
-        ├── CLAUDE.md, PLANNING.md, CONFIG.md, README.md
-        ├── .claude/commands/          # 13 commands (multi-project paths)
-        ├── .claude/skills/            # 2 skills
+        ├── AGENTS.md, CLAUDE.md, CONFIG.md, README.md
+        ├── .claude/skills/            # 14 command-skills + 2 built-in skills (multi-project paths)
         ├── context-engineering/       # CE skeleton
         ├── knowledge-base/            # KB skeleton (per-project implementations)
         └── shared/                    # Shared docs, templates, scripts

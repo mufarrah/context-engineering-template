@@ -105,8 +105,7 @@ Read these files in order:
 
 ## Required Reading (All Phases)
 These files should be read before starting ANY phase:
-- `CLAUDE.md` - Project navigation and coding standards
-- `PLANNING.md` - Project architecture and philosophy
+- `AGENTS.md` - Project instructions: architecture and coding standards
 - {Other files from requirements}
 
 ## Overall Success Criteria

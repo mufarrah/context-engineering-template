@@ -109,16 +109,14 @@ Use the `skill-creator` skill to create new domain-specific skills for your work
 
 | Resource | Location |
 |----------|----------|
-| Master navigation | `CLAUDE.md` |
-| Development philosophy | `PLANNING.md` |
+| Master navigation, architecture & conventions | `AGENTS.md` |
 | Commands reference | `CONFIG.md` (this file) |
 | Workspace status | `context-engineering/_STATUS.md` |
 | Pending features | `context-engineering/feature-inputs/pending/` |
 | Active features | `context-engineering/feature-inputs/in-progress/` |
 | PRPs (permanent) | `context-engineering/PRPs/` |
 | Knowledge base TOC | `knowledge-base/INDEX.md` |
-| Project coding rules | `active-projects/{project}/CLAUDE.md` |
-| Project architecture | `active-projects/{project}/PLANNING.md` |
+| Project coding rules & architecture | `active-projects/{project}/AGENTS.md` |
 | Project templates | `shared/templates/` |
 | Commands & skills guide | `shared/docs/commands-and-skills.md` |
 | KB guide | `shared/docs/knowledge-base.md` |

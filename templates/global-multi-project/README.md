@@ -11,8 +11,8 @@
 ```bash
 # After running the setup script, your workspace looks like:
 my-workspace/
-├── CLAUDE.md              # Master navigation hub
-├── PLANNING.md            # Development philosophy
+├── AGENTS.md              # Master navigation hub (agent instructions, architecture, conventions)
+├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
 ├── CONFIG.md              # Commands reference
 ├── active-projects/       # Your project repos go here
 ├── context-engineering/   # Feature management system
@@ -38,7 +38,7 @@ git clone https://github.com/you/project-b active-projects/project-b
 
 This command will:
 - Scan all projects and detect tech stacks
-- Generate `CLAUDE.md` and `PLANNING.md` for each project
+- Generate `AGENTS.md` for each project
 - Update root navigation docs
 - Initialize the knowledge base
 - Report what was discovered
@@ -110,7 +110,7 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 
 ### 3. AI Commands (Automation)
 
-13 commands that automate the entire workflow:
+14 slash commands that automate the entire workflow. Each command is a skill under `.claude/skills/<command>/SKILL.md` and is invoked the same way (`/command`):
 
 | Command | Purpose |
 |---------|---------|
@@ -119,6 +119,7 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 | `/check-prp` | Validate PRP structure and requirements alignment |
 | `/execute-prp` | Execute PRP (Phase 0 for phased PRPs) |
 | `/continue-prp` | Continue phased PRP (Phase 1+) |
+| `/checkpoint` | Capture a durable resume checkpoint of the current PRP |
 | `/check-progress` | Mid-development progress audit against requirements |
 | `/ensure-tracking` | Verify documentation completeness before closing context |
 | `/update-knowledge-base` | Extract knowledge from PRP into KB + update project docs |
@@ -134,16 +135,16 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 
 ```
 {workspace-name}/
-├── CLAUDE.md                           # Master navigation hub for AI agents
-├── PLANNING.md                         # Development philosophy and principles
+├── AGENTS.md                           # Master navigation hub: agent instructions, architecture, conventions
+├── CLAUDE.md                           # Thin Claude Code entry point (imports AGENTS.md)
 ├── CONFIG.md                           # Commands and skills reference
 ├── README.md                           # This file
 ├── .template-version                   # Template version for updates
 │
 ├── active-projects/                    # Your project repositories
 │   └── {project-name}/
-│       ├── CLAUDE.md                   # Project-specific coding standards
-│       └── PLANNING.md                 # Project-specific architecture
+│       ├── AGENTS.md                   # Project instructions: architecture + coding standards
+│       └── CLAUDE.md                   # Thin Claude Code entry point (imports AGENTS.md)
 │
 ├── experiments/                        # Prototypes and proof-of-concepts
 │
@@ -173,16 +174,16 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 │   │   ├── knowledge-base.md           # KB structure & integration guide
 │   │   └── prp-workflow.md             # PRP lifecycle guide
 │   ├── templates/                      # Per-project doc templates
-│   │   ├── CLAUDE-template.md
-│   │   └── PLANNING-template.md
+│   │   ├── AGENTS-template.md
+│   │   └── CLAUDE-template.md
 │   ├── scripts/                        # Utility scripts
 │   └── assets/                         # Shared assets
 │
 ├── archive/                            # Completed/paused projects
 │
 ├── .claude/                            # AI agent configuration
-│   ├── commands/                       # Slash commands (13 total)
-│   └── skills/                         # Domain expertise
+│   └── skills/                         # Slash commands + domain skills (each a folder with SKILL.md)
+│       ├── {command}/                  # 14 slash-command skills (/generate-prp, /execute-prp, ...)
 │       ├── skill-creator/              # Framework for creating new skills
 │       └── frontend-design/            # Production UI design
 │
@@ -193,7 +194,7 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 
 ## Skills
 
-Cortex includes 2 built-in skills:
+In addition to the slash-command skills above, Cortex includes 2 built-in domain skills:
 
 ### skill-creator
 
@@ -283,7 +284,7 @@ The knowledge base isn't standalone — it's deeply integrated into the PRP work
 ### After Each Phase
 - `/update-knowledge-base` extracts new knowledge
 - New patterns, gotchas, and decisions are documented
-- Project CLAUDE.md and PLANNING.md are updated
+- Project AGENTS.md is updated
 - Index and summaries are regenerated
 
 ### Before Closing Context (`/ensure-tracking`)
@@ -306,7 +307,7 @@ This command:
 2. Fetches the latest release from the Cortex GitHub repo
 3. Classifies files as:
    - **Infrastructure** (safe to update): commands, skills, KB templates, PRP templates
-   - **User content** (never touched): CLAUDE.md, PLANNING.md, KB entries, PRPs, your projects
+   - **User content** (never touched): AGENTS.md, CLAUDE.md, KB entries, PRPs, your projects
    - **Review candidates** (shows diff): CONFIG.md, .gitignore, README.md
 4. Shows diffs and asks for approval before applying
 5. Bumps `.template-version`
@@ -317,8 +318,8 @@ This command:
 
 | Document | What It Covers |
 |----------|---------------|
-| [CLAUDE.md](CLAUDE.md) | Master navigation, workspace structure, workflows |
-| [PLANNING.md](PLANNING.md) | Development philosophy, context engineering principles |
+| [AGENTS.md](AGENTS.md) | Master navigation, workspace structure, workflows, conventions |
+| [CLAUDE.md](CLAUDE.md) | Thin Claude Code entry point (imports AGENTS.md) |
 | [CONFIG.md](CONFIG.md) | All commands and skills with syntax |
 | [shared/docs/commands-and-skills.md](shared/docs/commands-and-skills.md) | Detailed command & skills reference |
 | [shared/docs/knowledge-base.md](shared/docs/knowledge-base.md) | KB architecture and integration guide |

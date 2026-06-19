@@ -208,9 +208,7 @@ Phase Complete
     │
     ├──→ Updates knowledge-base/ topics
     │
-    ├──→ Updates CLAUDE.md (patterns, modules)
-    │
-    ├──→ Updates PLANNING.md (architecture)
+    ├──→ Updates AGENTS.md (durable, high-level architecture facts only — never fix logs or transient notes)
     │
     ▼
 /ensure-tracking {PRP-path}

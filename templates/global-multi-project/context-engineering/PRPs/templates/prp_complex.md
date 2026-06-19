@@ -105,9 +105,8 @@ Read these files in order:
 
 ## Required Reading (All Phases)
 These files should be read before starting ANY phase:
-- Root `CLAUDE.md` - Workspace rules
-- `active-projects/{project}/CLAUDE.md` - Project coding standards
-- `active-projects/{project}/PLANNING.md` - Project architecture
+- Root `AGENTS.md` - Workspace rules
+- `active-projects/{project}/AGENTS.md` - Project instructions: architecture and coding standards
 - {Other files from requirements}
 
 ## Overall Success Criteria

@@ -13,8 +13,8 @@ This is the **single-project** template — designed for individual repositories
 ```bash
 # After running the setup script, your project looks like:
 my-project/
-├── CLAUDE.md              # Navigation + coding standards
-├── PLANNING.md            # Architecture + philosophy
+├── AGENTS.md              # Agent instructions: navigation, architecture, coding standards
+├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
 ├── CONFIG.md              # Commands reference
 ├── context-engineering/   # Feature management system
 ├── knowledge-base/        # Persistent knowledge
@@ -30,8 +30,7 @@ my-project/
 
 This command will:
 - Analyze your project and detect the tech stack
-- Populate CLAUDE.md with coding standards and file organization
-- Populate PLANNING.md with architecture details
+- Populate AGENTS.md with architecture, coding standards, and file organization
 - Initialize the knowledge base
 - Report what was discovered
 
@@ -102,7 +101,7 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 
 ### 3. AI Commands (Automation)
 
-13 commands that automate the entire workflow:
+14 slash commands that automate the entire workflow. Each command is a skill under `.claude/skills/<command>/SKILL.md` and is invoked the same way (`/command`):
 
 | Command | Purpose |
 |---------|---------|
@@ -111,6 +110,7 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 | `/check-prp` | Validate PRP structure and requirements alignment |
 | `/execute-prp` | Execute PRP (Phase 0 for phased PRPs) |
 | `/continue-prp` | Continue phased PRP (Phase 1+) |
+| `/checkpoint` | Capture a durable resume checkpoint of the current PRP |
 | `/check-progress` | Mid-development progress audit against requirements |
 | `/ensure-tracking` | Verify documentation completeness before closing context |
 | `/update-knowledge-base` | Extract knowledge from PRP into KB + update docs |
@@ -126,8 +126,8 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 
 ```
 {project-name}/
-├── CLAUDE.md                           # Navigation + coding standards
-├── PLANNING.md                         # Architecture + development philosophy
+├── AGENTS.md                           # Agent instructions: navigation, architecture, coding standards
+├── CLAUDE.md                           # Thin Claude Code entry point (imports AGENTS.md)
 ├── CONFIG.md                           # Commands and skills reference
 ├── README.md                           # This file
 ├── .template-version                   # Template version for updates
@@ -158,8 +158,8 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 │   └── prp-workflow.md                # PRP lifecycle guide
 │
 ├── .claude/                            # AI agent configuration
-│   ├── commands/                       # Slash commands (13 total)
-│   └── skills/                         # Domain expertise
+│   └── skills/                         # Slash commands + domain skills (each a folder with SKILL.md)
+│       ├── {command}/                  # 14 slash-command skills (/generate-prp, /execute-prp, ...)
 │       ├── skill-creator/              # Framework for creating new skills
 │       └── frontend-design/            # Production UI design
 │
@@ -170,7 +170,7 @@ The KB is updated automatically after every PRP phase via `/update-knowledge-bas
 
 ## Skills
 
-Cortex includes 2 built-in skills:
+In addition to the slash-command skills above, Cortex includes 2 built-in domain skills:
 
 ### skill-creator
 
@@ -248,7 +248,7 @@ The knowledge base is deeply integrated into the PRP workflow:
 
 ### After Each Phase
 - `/update-knowledge-base` extracts new knowledge
-- CLAUDE.md and PLANNING.md are updated
+- AGENTS.md is updated
 - Index and summaries are regenerated
 
 ### Before Closing Context (`/ensure-tracking`)
@@ -270,7 +270,7 @@ This command:
 2. Fetches the latest release from the Cortex GitHub repo
 3. Classifies files as:
    - **Infrastructure** (safe to update): commands, skills, KB templates, PRP templates
-   - **User content** (never touched): CLAUDE.md, PLANNING.md, KB entries, PRPs, your code
+   - **User content** (never touched): AGENTS.md, CLAUDE.md, KB entries, PRPs, your code
    - **Review candidates** (shows diff): CONFIG.md, .gitignore, README.md
 4. Shows diffs and asks for approval before applying
 5. Bumps `.template-version`
@@ -281,8 +281,8 @@ This command:
 
 | Document | What It Covers |
 |----------|---------------|
-| [CLAUDE.md](CLAUDE.md) | Project navigation, coding standards, workflows |
-| [PLANNING.md](PLANNING.md) | Architecture, philosophy, design decisions |
+| [AGENTS.md](AGENTS.md) | Project instructions: navigation, architecture, coding standards |
+| [CLAUDE.md](CLAUDE.md) | Thin Claude Code entry point (imports AGENTS.md) |
 | [CONFIG.md](CONFIG.md) | All commands and skills with syntax |
 | [docs/commands-and-skills.md](docs/commands-and-skills.md) | Detailed command & skills reference |
 | [docs/knowledge-base.md](docs/knowledge-base.md) | KB architecture and integration guide |
@@ -294,7 +294,7 @@ This command:
 
 - Run `/audit-context` for a comprehensive project health check
 - Check `context-engineering/_STATUS.md` for current project state
-- Read `CLAUDE.md` for coding conventions
+- Read `AGENTS.md` for coding conventions
 - Search `knowledge-base/INDEX.md` for past decisions and patterns
 
 ---

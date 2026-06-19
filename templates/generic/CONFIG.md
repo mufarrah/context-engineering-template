@@ -83,8 +83,7 @@ Use the `skill-creator` skill to create new domain-specific skills for your proj
 
 | Resource | Location |
 |----------|----------|
-| Navigation + coding standards | `CLAUDE.md` |
-| Architecture + philosophy | `PLANNING.md` |
+| Navigation, architecture & coding standards | `AGENTS.md` |
 | Commands reference | `CONFIG.md` (this file) |
 | Project status | `context-engineering/_STATUS.md` |
 | Pending features | `context-engineering/feature-inputs/pending/` |

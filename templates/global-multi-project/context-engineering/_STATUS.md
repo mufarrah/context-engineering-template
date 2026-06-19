@@ -58,7 +58,7 @@
 ## Quick Links
 
 - [Master Navigation](../CLAUDE.md)
-- [Development Philosophy](../PLANNING.md)
+- [Agent Instructions](../AGENTS.md)
 - [All PRPs](PRPs/)
 - [Pending Features](feature-inputs/pending/)
 - [In-Progress Features](feature-inputs/in-progress/)
