@@ -146,11 +146,21 @@ Order: **migrations first** (structural), then **infra reconciliation**, then **
    - PRISTINE → overwrite with the latest version.
    - MODIFIED → default to **3-way merge**: find the merge base — the historical template version
      of this path with the smallest diff against the user's file (the version they edited from) —
-     compute their delta (base → theirs) and replay it onto the new version (base → ours). Show the
-     merged result as a preview; on conflict between their delta and a template change, show both
-     passages and ask. Alternatives offered: keep-mine / take-new / skip. Rationale: the user ran an
-     updater because they want updates — keep-mine forfeits them, take-new forfeits their edits;
-     merge delivers both. Backup guarantees nothing is lost either way.
+     compute their delta (base → theirs) and replay it onto the new version (base → ours).
+     Alternatives offered: keep-mine / take-new / skip. Rationale: the user ran an updater because
+     they want updates — keep-mine forfeits them, take-new forfeits their edits; merge delivers
+     both. Backup guarantees nothing is lost either way.
+
+     **Conflict protocol (never auto-resolve):** a conflict exists when
+     (a) the user's delta and the template's delta touch the **same passage**,
+     (b) the user's edit modifies text the new version **removed or rewrote**, or
+     (c) the user's edit **references artifacts the new version eliminated** (e.g. `PLANNING.md`
+         paths, removed steps) — replaying it verbatim would reintroduce stale content.
+     Before writing anything: enumerate every conflict (numbered), and for each show the user's
+     passage and the template's new passage side by side, then ask — **keep mine / take template /
+     combine (user dictates wording)**. Cleanly-replayed edits are listed separately in the
+     preview. The merged file is written only after every conflict has an explicit decision;
+     if any remain undecided, treat the file as skipped.
    - MISSING → ask to add (default yes); copy from `$SRC`.
    - USER-ADDED → skip silently (never touch).
 3. **USER-CONTENT** → never auto-write. If a migration must transform it, that happens inside the

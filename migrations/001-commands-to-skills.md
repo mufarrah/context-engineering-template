@@ -36,8 +36,11 @@ For each old command file, compute its class (see `README.md` → "The modificat
      the user's file (that's the version they originally copied). Compute the user's delta
      (base → theirs) and replay it onto the official new skill body (base → ours). Result: the
      v2 skill **plus** their customizations. Show the merged result as a preview and confirm
-     before writing. If their delta conflicts with a v2 change, show both versions of the
-     conflicting passage and ask.
+     before writing. **Conflicts are never auto-resolved** — a conflict is when their delta and
+     the v2 change touch the same passage, when their edit modifies text v2 removed/rewrote, or
+     when their edit references artifacts v2 eliminated (e.g. `PLANNING.md` paths — verbatim
+     replay would reintroduce stale content). Enumerate each conflict, show both passages side
+     by side, and ask: keep mine / take v2 / combine. Write only after every conflict is decided.
   2. **Convert my edited version as-is** — create the skill from their edited body verbatim
      (frontmatter added: `name`, `description`, `disable-model-invocation: true`). Their edits
      kept, but they forgo the v2 improvements in this file.
