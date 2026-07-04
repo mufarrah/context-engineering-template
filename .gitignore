@@ -3,3 +3,6 @@ venv_linux
 __pycache__
 .ruff_cache
 .pytest_cache
+
+# Maintainer research notes (local only, never shipped)
+.research/
