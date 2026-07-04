@@ -52,6 +52,18 @@ For each old command file, compute its class (see `README.md` → "The modificat
   frontmatter derived from the file. Back up the original to `.cortex-backup/<ts>/commands/`.
   Never silently drop it.
 
+- **DEPRECATED** (PRISTINE or MODIFIED, but **no official skill of that name exists in template
+  HEAD** — the template shipped this command once and later removed/renamed it, e.g. old
+  `analyze-project` / `create-new-project`, or a generic-template command inside a global
+  workspace) → the user may still rely on it. **Never silently delete.** Ask:
+  1. **Convert to a skill anyway** (default) — keeps the command working; body preserved verbatim
+     (their edits included, if MODIFIED).
+  2. **Retire it** — move to `.cortex-backup/<ts>/commands/` and do not create a skill.
+  3. **Skip** — leave in `commands/` for now (blocks removal of the directory).
+  If the command was **renamed** in the template (an obvious successor skill exists, e.g.
+  `setup-project` → `setup-workspace` in a global workspace), point that out and recommend
+  retiring the old one in favor of the successor.
+
 ### 2. Add any official skills the repo is missing
 
 This is handled by the runner's MISSING pass: every official `.claude/skills/<name>/SKILL.md`
@@ -76,8 +88,9 @@ If the user chose **Skip** for any file, leave `commands/` in place and report i
 
 | Class | Outcome |
 |-------|---------|
-| PRISTINE command | Official skill installed; old file removed (copy in backup). |
-| MODIFIED command | User chooses: convert-my-version (default) / take-official / merge / skip. Backup always taken. |
+| PRISTINE command (official skill exists) | Official skill installed; old file removed (copy in backup). |
+| MODIFIED command (official skill exists) | User chooses: convert-my-version (default) / take-official / merge / skip. Backup always taken. |
+| DEPRECATED command (no skill in HEAD) | User chooses: convert-to-skill (default) / retire to backup / skip. Never silently deleted. |
 | USER-ADDED command | Converted to a skill, body preserved; original backed up. |
 | USER-ADDED skill (already under `skills/`) | **Untouched.** |
 
