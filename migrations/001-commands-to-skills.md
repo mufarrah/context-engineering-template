@@ -29,21 +29,22 @@ For each old command file, compute its class (see `README.md` → "The modificat
   installed (the runner's "MISSING file" pass adds it), then mark the old command file for removal.
 
 - **MODIFIED** (hash matches no historical version) → **the user edited this command.** Do NOT
-  discard their work. Present a choice:
-  1. **Convert my edited version to a skill** (default) — create `.claude/skills/<name>/SKILL.md`
-     from the user's edited body, adding the frontmatter:
-     ```yaml
-     ---
-     name: <name>
-     description: "<one line — reuse the official description if names match, else summarize the body>"
-     disable-model-invocation: true
-     ---
-     ```
-     Then remove the old command file. Their edits are preserved verbatim in the new skill.
-  2. **Take the official new skill instead** — install the official `<name>` skill; move their
-     edited command to `.cortex-backup/<ts>/commands/<name>.md` so it's recoverable.
-  3. **Keep both / show diff** — show their version vs the official skill body; let them merge by hand.
+  discard their work — but remember they ran an updater because they *want updates*. Present a
+  choice:
+  1. **Merge: my edits rebased onto the new skill** (default) — a **three-way merge**. Find the
+     merge base: the historical template version of this command with the smallest diff against
+     the user's file (that's the version they originally copied). Compute the user's delta
+     (base → theirs) and replay it onto the official new skill body (base → ours). Result: the
+     v2 skill **plus** their customizations. Show the merged result as a preview and confirm
+     before writing. If their delta conflicts with a v2 change, show both versions of the
+     conflicting passage and ask.
+  2. **Convert my edited version as-is** — create the skill from their edited body verbatim
+     (frontmatter added: `name`, `description`, `disable-model-invocation: true`). Their edits
+     kept, but they forgo the v2 improvements in this file.
+  3. **Take the official new skill** — install the official `<name>` skill; their edited command
+     moves to `.cortex-backup/<ts>/commands/<name>.md` (recoverable).
   4. **Skip** — leave the command file in place (no conversion); re-runnable later.
+  In all cases the old command file is removed only after conversion and backup.
 
 - **USER-ADDED** (a command whose name the template never shipped, e.g. one the user wrote)
   → **the user authored this command.** Convert it to a skill so it keeps working under the
@@ -89,7 +90,7 @@ If the user chose **Skip** for any file, leave `commands/` in place and report i
 | Class | Outcome |
 |-------|---------|
 | PRISTINE command (official skill exists) | Official skill installed; old file removed (copy in backup). |
-| MODIFIED command (official skill exists) | User chooses: convert-my-version (default) / take-official / merge / skip. Backup always taken. |
+| MODIFIED command (official skill exists) | User chooses: **3-way merge (default — my edits rebased onto the new skill)** / convert-my-version as-is / take-official / skip. Backup always taken. |
 | DEPRECATED command (no skill in HEAD) | User chooses: convert-to-skill (default) / retire to backup / skip. Never silently deleted. |
 | USER-ADDED command | Converted to a skill, body preserved; original backed up. |
 | USER-ADDED skill (already under `skills/`) | **Untouched.** |

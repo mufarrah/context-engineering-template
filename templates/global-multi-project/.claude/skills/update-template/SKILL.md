@@ -92,7 +92,8 @@ classify() {
 ```
 
 - **PRISTINE** → safe to update (auto, but listed).
-- **MODIFIED** → you edited it → prompt with a diff (keep mine / take new / merge / skip).
+- **MODIFIED** → you edited it → prompt, with **3-way merge as the recommended default**
+  (your edits rebased onto the new version — see Phase 4; also: keep mine / take new / skip).
 - **MISSING** → offer to **add** it. *(This is how newly-added skills such as `checkpoint` /
   `continue-prp` land in old workspaces — no migration required.)*
 - **USER-ADDED** (path the template never had) → **leave untouched, never remove.**
@@ -140,8 +141,17 @@ Order: **migrations first** (structural), then **infra reconciliation**, then **
    back up before any delete/overwrite). The CLAUDE.md + PLANNING.md → AGENTS.md fold is an
    **intelligent merge you perform** with preview + confirmation — preserve all of the user's text;
    when unsure, keep more and ask.
-2. **Reconcile infra:** PRISTINE → update; MODIFIED → diff + ask (default keep-mine); MISSING → ask
-   to add (default yes) from `$SRC`; USER-ADDED → skip silently.
+2. **Reconcile infra:**
+   - PRISTINE → update to latest.
+   - MODIFIED → default to **3-way merge**: find the merge base — the historical template version
+     of this path with the smallest diff against the user's file (the version they edited from) —
+     compute their delta (base → theirs) and replay it onto the new version (base → ours). Show the
+     merged result as a preview; on conflict between their delta and a template change, show both
+     passages and ask. Alternatives offered: keep-mine / take-new / skip. Rationale: the user ran an
+     updater because they want updates — keep-mine forfeits them, take-new forfeits their edits;
+     merge delivers both. Backup guarantees nothing is lost either way.
+   - MISSING → ask to add (default yes) from `$SRC`.
+   - USER-ADDED → skip silently (never touch).
 3. **USER-CONTENT** → never auto-write (only via a migration, with its own backup + confirmation).
 
 ---

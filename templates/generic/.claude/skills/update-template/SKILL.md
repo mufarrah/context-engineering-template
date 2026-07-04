@@ -94,7 +94,8 @@ classify() {
 ```
 
 - **PRISTINE** → safe to update to latest (auto, but listed).
-- **MODIFIED** → you edited it → will prompt with a diff (keep mine / take new / merge / skip).
+- **MODIFIED** → you edited it → will prompt, with **3-way merge as the recommended default**
+  (your edits rebased onto the new version — see Phase 4; also: keep mine / take new / skip).
 - **MISSING** → template has it, repo doesn't → offer to **add** it. *(This is how newly-added
   skills such as `checkpoint` / `continue-prp` land in old repos — no migration required.)*
 - **USER-ADDED** (a skill/file whose path the template never had — `hist` returns empty for it)
@@ -143,7 +144,13 @@ Order: **migrations first** (structural), then **infra reconciliation**, then **
    more and ask.
 2. **Reconcile infra:**
    - PRISTINE → overwrite with the latest version.
-   - MODIFIED → show the diff; ask keep-mine / take-new / merge / skip. Default to **keep-mine**.
+   - MODIFIED → default to **3-way merge**: find the merge base — the historical template version
+     of this path with the smallest diff against the user's file (the version they edited from) —
+     compute their delta (base → theirs) and replay it onto the new version (base → ours). Show the
+     merged result as a preview; on conflict between their delta and a template change, show both
+     passages and ask. Alternatives offered: keep-mine / take-new / skip. Rationale: the user ran an
+     updater because they want updates — keep-mine forfeits them, take-new forfeits their edits;
+     merge delivers both. Backup guarantees nothing is lost either way.
    - MISSING → ask to add (default yes); copy from `$SRC`.
    - USER-ADDED → skip silently (never touch).
 3. **USER-CONTENT** → never auto-write. If a migration must transform it, that happens inside the
