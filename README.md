@@ -160,13 +160,35 @@ cp context-engineering/PRPs/templates/feature_input_template.md \
 
 ## Updating Cortex
 
-When this repo gets new commands, skills, or improvements:
+When this repo gets new skills, migrations, or improvements, run inside your project:
 
 ```
 /update-template
 ```
 
-This command reads your `.template-version`, fetches the latest release, classifies files (infrastructure vs user content vs review candidates), shows diffs, and applies approved updates.
+The runner does **not** trust version numbers — it observes your repo's actual on-disk state and
+reconciles it to the latest template: new skills are offered for install, files you never touched
+are updated, **files you edited get a 3-way merge** (your changes rebased onto the new version,
+conflicts always surfaced as explicit decisions), your own additions are never touched, and
+breaking structural changes run as idempotent migrations with backups (`.cortex-backup/`) and
+per-step consent. Safe to re-run anytime.
+
+### Upgrading an old repo (copied before v2.0.0)
+
+Repos copied before v2.0.0 don't have the migration runner yet. Install it once with the
+bootstrap, then update as usual:
+
+```bash
+# from a clone of this template repo:
+tools/cortex-update.sh  /path/to/your-project  https://github.com/<you>/context-engineering-template
+# Windows PowerShell:
+./tools/cortex-update.ps1 -Target ..\your-project -Repo https://github.com/<you>/context-engineering-template
+```
+
+Then open your project in Claude Code and run `/update-template`. It will show a full dry-run plan
+first (nothing changes without your approval), back everything up, convert old
+`.claude/commands/` to skills, fold `CLAUDE.md` + `PLANNING.md` into `AGENTS.md`, and preserve
+every customization you made — including commands you edited and skills you added.
 
 ---
 
