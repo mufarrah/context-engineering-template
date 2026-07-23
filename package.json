@@ -1,6 +1,6 @@
 {
   "name": "@mufarrah/cortex",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Cortex — the thinking layer around your codebase: PRP workflow + concept-centric knowledge base + anti-rot freshness engine. Install and update it in any repo with one command.",
   "type": "module",
   "bin": {

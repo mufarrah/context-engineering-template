@@ -1,119 +1,120 @@
-# Cortex - The Thinking Layer Around Your Codebase
+# Cortex — The Thinking Layer Around Your Codebase
 
-**Cortex** is a structured context engineering system that gives AI agents deep, persistent knowledge about your projects. It combines a **PRP workflow** (Project Requirement Plans) for feature development, a **concept-centric knowledge base** for institutional memory, and **AI-powered commands** that automate the entire lifecycle.
+**Cortex** gives AI coding agents deep, persistent, **self-verifying** knowledge about your projects. It combines a **PRP workflow** (Project Requirement Plans) for feature development, a **concept-centric knowledge base** for institutional memory, an **anti-rot freshness engine** that keeps that knowledge true to the code, and **AI commands** (Claude Code skills) that automate the whole lifecycle.
+
+> Built for [Claude Code](https://claude.com/claude-code). Requires **Node ≥ 18**.
 
 ---
 
-## Quick Start
+## Install
+
+No cloning required — the templates ship inside the package.
 
 ```bash
-# Clone this repository
-git clone https://github.com/mufarrah/context-engineering-template.git
-cd context-engineering-template
+# Add Cortex to a single project (run inside the repo)
+npx @mufarrah/cortex init . --kind generic
 
-# Run the setup script
-./setup-context-engineering.sh /path/to/your/project
+# ...or scaffold a multi-project workspace
+npx @mufarrah/cortex init ./my-workspace --kind workspace
 
-# Choose a template:
-#   1. Single Project (generic) — for individual repositories
-#   2. Multi-Project Workspace (global) — for managing multiple projects
+# ...and install the anti-rot git hook at the same time
+npx @mufarrah/cortex init . --kind generic --hook
 ```
 
-After setup, open your project in Claude Code and run:
-```
-/setup-project      # (generic template)
-/setup-workspace    # (global template)
+Prefer a global command?
+
+```bash
+npm i -g @mufarrah/cortex
+cortex init . --kind generic
 ```
 
-This analyzes your codebase, populates documentation, and initializes the knowledge base.
+`init` copies template files **without clobbering** anything you already have (use `--force` to overwrite). Then open the repo in **Claude Code** and run `/setup-project` (single) or `/setup-workspace` (workspace) — it analyzes your codebase, populates the docs, and initializes the knowledge base.
 
 ---
 
-## Two Templates
+## Keep knowledge fresh (anti-rot)
 
-### 1. Single Project (`generic`)
+A knowledge base rots the moment code changes but the docs don't — and every agent then inherits the stale "fact." Cortex fights that on two levels:
 
-For individual repositories. Adds context engineering directly to your project.
-
-```
-my-project/
-├── AGENTS.md              # Agent instructions: navigation, architecture, coding standards
-├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
-├── CONFIG.md              # Commands reference
-├── context-engineering/   # Feature management (PRPs, feature inputs)
-├── knowledge-base/        # Concept-centric knowledge base
-├── docs/                  # Documentation guides
-├── .claude/skills/        # 14 slash-command skills + 2 built-in skills
-└── src/                   # Your source code
+```bash
+cortex check      # fast, deterministic scan: KB references vs real code + index sync
+cortex hook       # install a pre-commit tripwire so rot is caught automatically
 ```
 
-### 2. Multi-Project Workspace (`global-multi-project`)
+`cortex check` is CI- and hook-friendly (meaningful exit code, `--json` output). For a **deep, code-grounded pass** that verifies every claim — file paths, symbols, counts, statuses, versions — and additively fixes what drifted, run **`/verify-knowledge-base`** in Claude Code.
 
-For workspaces managing multiple projects with shared resources.
-
-```
-my-workspace/
-├── AGENTS.md              # Master navigation hub (agent instructions, architecture, conventions)
-├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
-├── CONFIG.md              # Commands reference
-├── active-projects/       # Your project repositories
-│   └── {project}/
-│       ├── AGENTS.md      # Project instructions: architecture + coding standards
-│       └── CLAUDE.md      # Thin Claude Code entry point (imports AGENTS.md)
-├── context-engineering/   # Feature management
-├── knowledge-base/        # Cross-project knowledge base
-├── shared/                # Shared docs, templates, scripts
-└── .claude/skills/        # 14 slash-command skills + 2 built-in skills
-```
+Tune behavior per repo in `context-engineering/cortex.config.yaml`:
+`freshness.autofix: off | nag | safe-auto`, KB→code mappings, and ignore globs. Detection is automated; **remediation stays under your control**.
 
 ---
 
-## What You Get
+## Update Cortex
 
-### 14 AI Commands
+```bash
+npx @mufarrah/cortex update .
+```
 
-Each command is a skill under `.claude/skills/<command>/SKILL.md`, invoked the same way (`/command`):
+This refreshes the migration runner; then open the repo in Claude Code and run **`/update-template`**. The runner follows one principle — **the filesystem is the version**: it observes what's actually on disk and reconciles it to the latest template. New skills are offered, untouched files update silently, **files you edited get a 3-way merge** (conflicts always surfaced as explicit choices), your own additions are never touched, and breaking changes run as idempotent migrations with backups (`.cortex-backup/`) and per-step consent. Safe to re-run anytime.
+
+---
+
+## CLI reference
+
+| Command | Purpose |
+|---------|---------|
+| `cortex init [dir] --kind generic\|workspace [--hook] [--force]` | Add Cortex to a repo (templates bundled) |
+| `cortex update [dir] [--repo <url>]` | Refresh the migration runner, then run `/update-template` |
+| `cortex check [dir] [--json] [--quiet]` | Anti-rot freshness scan (KB vs code + index) |
+| `cortex hook [dir]` | Install the pre-commit freshness tripwire |
+| `cortex version` · `cortex help` | Version / usage |
+
+Deep reconciliation and knowledge extraction run as **Claude Code skills** (`/update-template`, `/update-knowledge-base`, `/verify-knowledge-base`) because they need judgment an interactive agent provides.
+
+---
+
+## What you get
+
+### 15 AI commands (Claude Code skills)
+
+Each is a skill under `.claude/skills/<command>/SKILL.md`, invoked with `/command`:
 
 | Command | Purpose |
 |---------|---------|
 | `/generate-requirements` | Transform feature ideas into structured requirements |
-| `/generate-prp` | Generate implementation-ready PRP from requirements |
+| `/generate-prp` | Generate an implementation-ready PRP from requirements |
 | `/check-prp` | Validate PRP structure and requirements alignment |
-| `/execute-prp` | Execute PRP (Phase 0 for phased PRPs) |
-| `/continue-prp` | Continue phased PRP (Phase 1+) |
+| `/execute-prp` | Execute a PRP (Phase 0 for phased PRPs) |
+| `/continue-prp` | Continue a phased PRP (Phase 1+) |
 | `/checkpoint` | Capture a durable resume checkpoint of the current PRP |
 | `/check-progress` | Mid-development progress audit |
 | `/ensure-tracking` | Verify documentation completeness before closing context |
-| `/update-knowledge-base` | Extract knowledge from PRP into KB |
+| `/update-knowledge-base` | Extract knowledge from a PRP into the KB |
 | `/populate-knowledge-base` | Full KB discovery and population |
-| `/rebuild-kb-index` | Regenerate INDEX.md and _SUMMARY.md files |
+| `/rebuild-kb-index` | Regenerate `INDEX.md` and `_SUMMARY.md` files |
+| `/verify-knowledge-base` | **Anti-rot** — verify KB claims against the actual code |
 | `/audit-context` | Comprehensive project/workspace health check |
-| `/setup-project` or `/setup-workspace` | Initial setup after copying template |
-| `/update-template` | Pull latest Cortex template updates |
+| `/setup-project` · `/setup-workspace` | Initial setup after `cortex init` |
+| `/update-template` | Reconcile the repo with the latest Cortex template |
 
-### 2 Built-in Skills
+### 2 built-in skills
 
 | Skill | Purpose |
 |-------|---------|
 | **skill-creator** | Framework for creating custom domain-specific skills |
 | **frontend-design** | Production-grade UI design (anti-AI-slop aesthetics) |
 
-### PRP Workflow
-
-Every feature follows a structured lifecycle:
+### PRP workflow
 
 ```
 Feature Idea → /generate-requirements → /generate-prp → /check-prp
     → /execute-prp → /continue-prp → /ensure-tracking → Complete
 ```
 
-- **Simple features**: Single PRP file
-- **Complex features**: Phased folder with PLAN.md, TEST-CASES.md, COMPLETED.md, FIXES.md, HANDOFF.md per phase
-- **Agent-guided testing**: After implementation, agent walks through test cases with you
+- **Simple features**: a single PRP file.
+- **Complex features**: a phased folder with `PLAN.md`, `TEST-CASES.md`, `COMPLETED.md`, `FIXES.md`, `HANDOFF.md` per phase.
+- **Agent-guided testing**: after implementation, the agent walks through the test cases with you.
 
-### Concept-Centric Knowledge Base
-
-Knowledge organized into 5 categories:
+### Concept-centric knowledge base
 
 | Category | Question | Example |
 |----------|----------|---------|
@@ -123,112 +124,38 @@ Knowledge organized into 5 categories:
 | **Gotchas** | "What to WATCH OUT for?" | Pitfalls, edge cases |
 | **Decisions** | "WHY was this chosen?" | Architecture Decision Records |
 
-Three reading levels: `INDEX.md` (overview) -> `_SUMMARY.md` (section) -> topic files (detail).
+Three reading levels: `INDEX.md` (overview) → `_SUMMARY.md` (section) → topic files (detail).
 
 ---
 
-## Feature Development Workflow
+## Two templates
+
+**`generic`** (single project) — adds Cortex directly to one repo:
+
+```
+my-project/
+├── AGENTS.md              # Agent instructions: navigation, architecture, standards
+├── CLAUDE.md              # Thin Claude Code entry point (imports AGENTS.md)
+├── CONFIG.md              # Commands reference
+├── context-engineering/   # Feature management (PRPs, feature inputs) + cortex.config.yaml
+├── knowledge-base/        # Concept-centric knowledge base
+├── docs/                  # Reference docs
+└── .claude/skills/        # command-skills + built-in skills
+```
+
+**`global-multi-project`** (`--kind workspace`) — for workspaces managing several repos, with shared resources, an `active-projects/` area, and a cross-project knowledge base.
+
+---
+
+## From source (contributors)
 
 ```bash
-# 1. Create feature input from template
-cp context-engineering/PRPs/templates/feature_input_template.md \
-   context-engineering/feature-inputs/pending/my-feature.md
-
-# 2. Fill in your ideas, then generate requirements
-/generate-requirements context-engineering/feature-inputs/pending/my-feature.md
-
-# 3. Generate implementation plan (PRP)
-/generate-prp context-engineering/feature-inputs/pending/my-feature.md
-
-# 4. Validate the plan
-/check-prp context-engineering/PRPs/MY-FEATURE/
-
-# 5. Execute
-/execute-prp context-engineering/PRPs/MY-FEATURE/
-
-# 6. For phased PRPs, continue each phase
-/continue-prp context-engineering/PRPs/MY-FEATURE/
-
-# 7. Update knowledge base (after EVERY phase)
-/update-knowledge-base context-engineering/PRPs/MY-FEATURE/
-
-# 8. Verify docs before closing context
-/ensure-tracking context-engineering/PRPs/MY-FEATURE/
+git clone https://github.com/mufarrah/context-engineering-template.git
+cd context-engineering-template
+./setup-context-engineering.sh /path/to/your/project   # interactive copy (equivalent to `cortex init`)
 ```
 
----
-
-## Updating Cortex
-
-When this repo gets new skills, migrations, or improvements, run inside your project:
-
-```
-/update-template
-```
-
-The runner does **not** trust version numbers — it observes your repo's actual on-disk state and
-reconciles it to the latest template: new skills are offered for install, files you never touched
-are updated, **files you edited get a 3-way merge** (your changes rebased onto the new version,
-conflicts always surfaced as explicit decisions), your own additions are never touched, and
-breaking structural changes run as idempotent migrations with backups (`.cortex-backup/`) and
-per-step consent. Safe to re-run anytime.
-
-### Upgrading an old repo (copied before v2.0.0)
-
-Repos copied before v2.0.0 don't have the migration runner yet. Install it once with the
-bootstrap, then update as usual:
-
-```bash
-# from a clone of this template repo:
-tools/cortex-update.sh  /path/to/your-project  https://github.com/<you>/context-engineering-template
-# Windows PowerShell:
-./tools/cortex-update.ps1 -Target ..\your-project -Repo https://github.com/<you>/context-engineering-template
-```
-
-Then open your project in Claude Code and run `/update-template`. It will show a full dry-run plan
-first (nothing changes without your approval), back everything up, convert old
-`.claude/commands/` to skills, fold `CLAUDE.md` + `PLANNING.md` into `AGENTS.md`, and preserve
-every customization you made — including commands you edited and skills you added.
-
----
-
-## Documentation
-
-Each template includes 3 reference docs:
-
-| Document | Covers |
-|----------|--------|
-| `commands-and-skills.md` | All 14 commands, 2 skills, decision tree, comparison matrix |
-| `knowledge-base.md` | KB architecture, 5 categories, PRP integration, templates |
-| `prp-workflow.md` | Full PRP lifecycle, simple vs phased, phase files, testing |
-
-Located in `docs/` (generic) or `shared/docs/` (global).
-
----
-
-## Repository Structure
-
-```
-context-engineering-template/
-├── README.md                          # This file
-├── CLAUDE.md                          # Repo-level AI context
-├── LICENSE                            # MIT
-├── setup-context-engineering.sh       # Setup script
-└── templates/
-    ├── generic/                       # Single-project template
-    │   ├── AGENTS.md, CLAUDE.md, CONFIG.md, README.md
-    │   ├── .claude/skills/            # 14 command-skills + 2 built-in skills (single-project paths)
-    │   ├── context-engineering/       # CE skeleton
-    │   ├── knowledge-base/            # KB skeleton (flat implementations)
-    │   └── docs/                      # 3 reference docs
-    │
-    └── global-multi-project/          # Multi-project workspace template
-        ├── AGENTS.md, CLAUDE.md, CONFIG.md, README.md
-        ├── .claude/skills/            # 14 command-skills + 2 built-in skills (multi-project paths)
-        ├── context-engineering/       # CE skeleton
-        ├── knowledge-base/            # KB skeleton (per-project implementations)
-        └── shared/                    # Shared docs, templates, scripts
-```
+The published CLI is the recommended path for everyone else — it bundles these templates so there's nothing to clone.
 
 ---
 
