@@ -1,0 +1,55 @@
+# ============================================================================
+# Cortex configuration — how this repo's context-engineering workflow behaves.
+# Every section is OPTIONAL; sensible defaults apply when a key is omitted.
+# This is the single surface skills read to stay flexible per-repo (the
+# "managed, not 100%-automated" principle).
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# freshness: consumed by /verify-knowledge-base (the anti-rot engine).
+# Detection is automated; remediation stays gated by `autofix`.
+# ----------------------------------------------------------------------------
+freshness:
+  # KB section / implementation folder -> the code path(s) it documents.
+  # Global-multi-project defaults shown. (Generic template: map every section
+  # to the repo source root instead, e.g. "*": "src".)
+  mappings:
+    "implementations/*": "active-projects/*"   # impl/<proj> -> active-projects/<proj>
+    "*": "active-projects/*"                     # concepts/flows/gotchas/decisions -> all projects
+  scope: [concepts, flows, implementations, gotchas, decisions]
+  autofix: nag              # off | nag | safe-auto
+  ignore: []                # globs of topic files or claim patterns to skip
+  depth_active_only: false  # deep-verify only recently-changed code dirs (git) to bound cost
+
+# ----------------------------------------------------------------------------
+# agentic: OPT-IN. Expose this repo's knowledge as a CATALOG that multi-agent
+# workflows can consume — the MCP -> catalog -> OSI-semantics spine from the
+# 2026 agentic-stack "one request through the whole stack" worked example.
+# A single-agent repo needs none of this; leave enabled: false.
+#
+# Precondition: /verify-knowledge-base keeps the catalog TRUE. OSI defines the
+# MEANING once, exportably. Together: correct + shared meaning for agents.
+# ----------------------------------------------------------------------------
+agentic:
+  enabled: false
+
+  # MCP — "how agents reach the catalog." Serve the knowledge base as an MCP
+  # server so orchestrator/specialist agents query verified project knowledge
+  # instead of re-deriving (or hallucinating) it.
+  mcp:
+    expose_knowledge_base: false
+    resources: [concepts, flows, decisions]        # sections agents may read
+    tools: [search_kb, get_topic, get_semantics]   # query surface exposed to agents
+
+  # OSI (Open Semantic Interchange) — the meaning layer. Business definitions
+  # (metrics, dimensions, entities, relationships) defined ONCE, exportable and
+  # tool-agnostic, so agents stop computing confident-but-wrong answers.
+  semantics:
+    export: false
+    format: osi                                    # osi | none
+    source: [concepts, "knowledge-base/semantics"] # concepts/ + optional semantics manifest
+
+  # A2A / agent roles — RESERVED. Declare agent roles here only when multiple
+  # cross-team agents genuinely interoperate (the article's own guidance:
+  # adopt A2A late, not to dress a single-agent product as multi-agent).
+  roles: []

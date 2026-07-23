@@ -1,0 +1,41 @@
+{
+  "name": "@mufarrah/cortex",
+  "version": "2.1.0",
+  "description": "Cortex — the thinking layer around your codebase: PRP workflow + concept-centric knowledge base + anti-rot freshness engine. Install and update it in any repo with one command.",
+  "type": "module",
+  "bin": {
+    "cortex": "bin/cortex.mjs"
+  },
+  "files": [
+    "bin",
+    "templates",
+    "migrations",
+    "tools",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "context-engineering",
+    "knowledge-base",
+    "prp",
+    "claude-code",
+    "ai-agents",
+    "cortex"
+  ],
+  "author": "A.Rahman Mufarrah",
+  "license": "MIT",
+  "homepage": "https://github.com/mufarrah/context-engineering-template#readme",
+  "bugs": {
+    "url": "https://github.com/mufarrah/context-engineering-template/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mufarrah/context-engineering-template.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

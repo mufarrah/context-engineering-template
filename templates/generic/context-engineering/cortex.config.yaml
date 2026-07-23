@@ -1,0 +1,32 @@
+# ============================================================================
+# Cortex configuration (single-project template). Every section OPTIONAL;
+# sensible defaults apply when a key is omitted.
+# ============================================================================
+
+# freshness: consumed by /verify-knowledge-base and `cortex check`.
+# Detection is automated; remediation stays gated by `autofix`.
+freshness:
+  # Single-project repo: the knowledge base documents THIS repo's source root.
+  # (The `cortex check` tripwire also auto-tries src/, lib/, app/ prefixes.)
+  mappings:
+    "*": "."          # all sections -> repo root (src/, lib/, app/, …)
+  scope: [concepts, flows, implementations, gotchas, decisions]
+  autofix: nag        # off | nag | safe-auto
+  ignore: []
+  depth_active_only: false
+
+# agentic: OPT-IN. Expose this repo's knowledge as a catalog that multi-agent
+# workflows can consume (MCP -> catalog -> OSI-semantics). A single-agent repo
+# needs none of this; leave enabled: false. See the global template's config
+# for the fully-documented block.
+agentic:
+  enabled: false
+  mcp:
+    expose_knowledge_base: false
+    resources: [concepts, flows, decisions]
+    tools: [search_kb, get_topic, get_semantics]
+  semantics:
+    export: false
+    format: osi
+    source: [concepts, "knowledge-base/semantics"]
+  roles: []
