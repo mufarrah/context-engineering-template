@@ -6,3 +6,8 @@ __pycache__
 
 # Maintainer research notes (local only, never shipped)
 .research/
+
+# Maintainer-local agent context. Repo root ONLY — the leading slash is
+# required so the shipped copies under templates/ stay tracked.
+/CLAUDE.md
+/AGENTS.md
