@@ -1,8 +1,13 @@
 # Cortex — The Thinking Layer Around Your Codebase
 
+[![npm version](https://img.shields.io/npm/v/@mufarrah/cortex.svg)](https://www.npmjs.com/package/@mufarrah/cortex)
+[![npm downloads](https://img.shields.io/npm/dm/@mufarrah/cortex.svg)](https://www.npmjs.com/package/@mufarrah/cortex)
+[![node](https://img.shields.io/node/v/@mufarrah/cortex.svg)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@mufarrah/cortex.svg)](LICENSE)
+
 **Cortex** gives AI coding agents deep, persistent, **self-verifying** knowledge about your projects. It combines a **PRP workflow** (Project Requirement Plans) for feature development, a **concept-centric knowledge base** for institutional memory, an **anti-rot freshness engine** that keeps that knowledge true to the code, and **AI commands** (Claude Code skills) that automate the whole lifecycle.
 
-> Built for [Claude Code](https://claude.com/claude-code). Requires **Node ≥ 18**.
+> **npm:** [`@mufarrah/cortex`](https://www.npmjs.com/package/@mufarrah/cortex) — built for [Claude Code](https://claude.com/claude-code). Requires **Node ≥ 18**.
 
 ---
 
